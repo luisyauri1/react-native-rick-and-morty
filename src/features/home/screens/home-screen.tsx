@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useQueryClient } from '@tanstack/react-query';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { CHARACTER_DETAIL_ROUTE_NAME } from '../../../app/navigation/route-names';
 import { ScreenLayout } from '../../../shared/ui/screen-layout';
@@ -37,20 +38,62 @@ export function HomeScreen() {
   }
 
   return (
-    <ScreenLayout>
-      <HomeHeader />
-      <HomeFilters
-        onChangeSearch={setSearchValue}
-        onChangeStatus={setSelectedStatus}
-        searchValue={searchValue}
-        selectedStatus={selectedStatus}
-      />
-      <HomeCharactersCard
-        characters={characters}
-        isLoading={isLoading}
-        errorMessage={errorMessage}
-        onPressCharacter={handlePressCharacter}
-      />
+    <ScreenLayout contentAlignment="top" withTopInset={false}>
+      <View style={styles.background}>
+        <View style={styles.glowPrimary} />
+        <View style={styles.glowSecondary} />
+      </View>
+
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <HomeHeader
+          characterCount={characters.length}
+          searchValue={searchValue}
+          selectedStatus={selectedStatus}
+        />
+        <HomeFilters
+          onChangeSearch={setSearchValue}
+          onChangeStatus={setSelectedStatus}
+          searchValue={searchValue}
+          selectedStatus={selectedStatus}
+        />
+        <HomeCharactersCard
+          characters={characters}
+          isLoading={isLoading}
+          errorMessage={errorMessage}
+          onPressCharacter={handlePressCharacter}
+        />
+      </ScrollView>
     </ScreenLayout>
   );
 }
+
+const styles = StyleSheet.create({
+  background: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  glowPrimary: {
+    position: 'absolute',
+    top: 24,
+    right: -40,
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: 'rgba(216, 255, 114, 0.08)',
+  },
+  glowSecondary: {
+    position: 'absolute',
+    top: 240,
+    left: -70,
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    backgroundColor: 'rgba(109, 168, 255, 0.08)',
+  },
+  content: {
+    paddingBottom: 28,
+  },
+});

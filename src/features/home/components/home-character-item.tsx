@@ -14,11 +14,21 @@ export function HomeCharacterItem({
   character,
   onPress,
 }: HomeCharacterItemProps) {
+  const statusTone =
+    character.status === 'Alive'
+      ? styles.statusDotAlive
+      : character.status === 'Dead'
+        ? styles.statusDotDead
+        : styles.statusDotUnknown;
+
   return (
     <Pressable
       accessibilityRole="button"
       onPress={() => onPress(character)}
-      style={styles.characterRow}
+      style={({ pressed }) => [
+        styles.characterRow,
+        pressed ? styles.characterRowPressed : null,
+      ]}
       testID={`home-character-pressable-${character.id}`}
     >
       <Image
@@ -27,6 +37,11 @@ export function HomeCharacterItem({
         testID={`home-character-image-${character.id}`}
       />
       <View style={styles.characterContent}>
+        <View style={styles.statusPill}>
+          <View style={[styles.statusDot, statusTone]} />
+          <Text style={styles.statusText}>{character.status}</Text>
+        </View>
+
         <Text style={styles.characterName} testID={`home-character-${character.id}`}>
           {character.name}
         </Text>
@@ -36,6 +51,7 @@ export function HomeCharacterItem({
         >
           {formatCharacterMeta(character)}
         </Text>
+        <Text style={styles.actionLabel}>Open profile</Text>
       </View>
     </Pressable>
   );
@@ -44,7 +60,8 @@ export function HomeCharacterItem({
 const styles = StyleSheet.create({
   characterName: {
     color: colors.text,
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: '700',
     lineHeight: 24,
   },
   characterMeta: {
@@ -54,16 +71,65 @@ const styles = StyleSheet.create({
   },
   characterRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
+    alignItems: 'flex-start',
+    marginBottom: 14,
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: '#0a1829',
+    padding: 14,
+  },
+  characterRowPressed: {
+    transform: [{ scale: 0.99 }],
+    borderColor: 'rgba(216, 255, 114, 0.24)',
   },
   characterImage: {
-    width: 56,
-    height: 56,
-    marginRight: 16,
-    borderRadius: 28,
+    width: 72,
+    height: 72,
+    marginRight: 14,
+    borderRadius: 18,
   },
   characterContent: {
     flex: 1,
+  },
+  statusPill: {
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    marginRight: 8,
+    borderRadius: 4,
+  },
+  statusDotAlive: {
+    backgroundColor: '#7df59b',
+  },
+  statusDotDead: {
+    backgroundColor: '#ff7f7f',
+  },
+  statusDotUnknown: {
+    backgroundColor: '#f2cf6f',
+  },
+  statusText: {
+    color: '#d8e7f7',
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+  },
+  actionLabel: {
+    marginTop: 10,
+    color: colors.accent,
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
   },
 });

@@ -21,7 +21,7 @@ export function CharacterDetailScreen({ route }: Props) {
   );
 
   return (
-    <ScreenLayout>
+    <ScreenLayout withTopInset={false}>
       <SurfaceCard>
         <Text style={styles.title}>{CHARACTER_DETAIL_TITLE}</Text>
 

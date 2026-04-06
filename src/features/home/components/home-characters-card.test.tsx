@@ -1,5 +1,4 @@
 import React from 'react';
-import { Text } from 'react-native';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 
 import { formatCharacterMeta } from '../utils/format-character-meta';
@@ -44,9 +43,9 @@ describe('HomeCharactersCard', () => {
     const renderer = renderHomeCharactersCard();
 
     // Assert
-    expect(renderer.root.findAllByType(Text)[0].props.children).toBe(
-      'Primeros personajes',
-    );
+    expect(
+      renderer.root.findByProps({ testID: 'home-card-title' }).props.children,
+    ).toBe('Primeros personajes');
   });
 
   test('renders the loading message when it is loading', () => {
@@ -175,6 +174,34 @@ describe('HomeCharactersCard', () => {
     expect(
       renderer.root.findByProps({ testID: 'home-empty' }).props.children,
     ).toBe('No encontramos personajes.');
+  });
+
+  test('renders the visible results count when the card has characters', () => {
+    // Arrange
+
+    // Act
+    const renderer = renderHomeCharactersCard({
+      characters: [
+        {
+          id: 1,
+          name: 'Rick Sanchez',
+          status: 'Alive',
+          gender: 'Male',
+          species: 'Human',
+          origin: {
+            name: 'Earth (C-137)',
+            url: 'https://rickandmortyapi.com/api/location/1',
+          },
+          image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+        },
+      ],
+    });
+
+    // Assert
+    expect(
+      renderer.root.findByProps({ testID: 'home-results-count' }).props
+        .children,
+    ).toBe(1);
   });
 
   test('calls onPressCharacter with the selected character', () => {

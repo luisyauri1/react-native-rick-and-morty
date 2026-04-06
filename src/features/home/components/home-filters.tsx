@@ -8,10 +8,13 @@ import {
 } from 'react-native';
 
 import { colors } from '../../../shared/theme/colors';
+import { SurfaceCard } from '../../../shared/ui/surface-card';
 import {
   HOME_FILTER_ALIVE_LABEL,
   HOME_FILTER_ALL_LABEL,
   HOME_FILTER_DEAD_LABEL,
+  HOME_FILTERS_DESCRIPTION,
+  HOME_FILTERS_TITLE,
   HOME_FILTER_UNKNOWN_LABEL,
   HOME_SEARCH_PLACEHOLDER,
 } from '../constants/home.constants';
@@ -53,7 +56,13 @@ export function HomeFilters({
   onChangeStatus,
 }: HomeFiltersProps) {
   return (
-    <View style={styles.container}>
+    <SurfaceCard testID="home-filters-card">
+      <View style={styles.header}>
+        <Text style={styles.eyebrow}>Search and filter</Text>
+        <Text style={styles.title}>{HOME_FILTERS_TITLE}</Text>
+        <Text style={styles.description}>{HOME_FILTERS_DESCRIPTION}</Text>
+      </View>
+
       <TextInput
         autoCapitalize="none"
         autoCorrect={false}
@@ -93,25 +102,43 @@ export function HomeFilters({
           );
         })}
       </View>
-    </View>
+    </SurfaceCard>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    marginBottom: 20,
+  header: {
+    marginBottom: 18,
+  },
+  eyebrow: {
+    marginBottom: 8,
+    color: '#7ea1c5',
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 1.1,
+    textTransform: 'uppercase',
+  },
+  title: {
+    marginBottom: 6,
+    color: colors.text,
+    fontSize: 22,
+    fontWeight: '700',
+  },
+  description: {
+    color: colors.muted,
+    fontSize: 15,
+    lineHeight: 22,
   },
   searchInput: {
-    marginBottom: 12,
-    borderRadius: 16,
+    marginBottom: 14,
+    borderRadius: 18,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: '#0a1829',
     color: colors.text,
     fontSize: 16,
     paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingVertical: 15,
   },
   filtersRow: {
     flexDirection: 'row',
@@ -121,17 +148,17 @@ const styles = StyleSheet.create({
   filterChip: {
     borderRadius: 999,
     borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: '#14273c',
+    paddingHorizontal: 16,
+    paddingVertical: 11,
   },
   filterChipSelected: {
     backgroundColor: colors.accent,
     borderColor: colors.accent,
   },
   filterChipLabel: {
-    color: colors.text,
+    color: '#d8e7f7',
     fontSize: 14,
     fontWeight: '700',
   },
