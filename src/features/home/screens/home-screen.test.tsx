@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 import { useNavigation } from '@react-navigation/native';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { CHARACTER_DETAIL_ROUTE_NAME } from '../../../app/navigation/route-names';
 import { useHomeCharacters } from '../hooks/use-home-characters';
@@ -8,6 +9,11 @@ import { HomeScreen } from './home-screen';
 
 jest.mock('@react-navigation/native', () => ({
   useNavigation: jest.fn(),
+}));
+
+jest.mock('@tanstack/react-query', () => ({
+  ...jest.requireActual('@tanstack/react-query'),
+  useQueryClient: jest.fn(),
 }));
 
 jest.mock('../hooks/use-home-characters', () => ({
@@ -60,6 +66,8 @@ const useHomeCharactersMock =
   useHomeCharacters as jest.MockedFunction<typeof useHomeCharacters>;
 const useNavigationMock =
   useNavigation as jest.MockedFunction<typeof useNavigation>;
+const useQueryClientMock =
+  useQueryClient as jest.MockedFunction<typeof useQueryClient>;
 
 let currentRenderer: ReactTestRenderer.ReactTestRenderer | null = null;
 
@@ -74,6 +82,7 @@ function renderHomeScreen() {
 describe('HomeScreen', () => {
   afterEach(() => {
     useNavigationMock.mockReset();
+    useQueryClientMock.mockReset();
     useHomeCharactersMock.mockReset();
 
     if (currentRenderer) {
@@ -89,6 +98,9 @@ describe('HomeScreen', () => {
     // Arrange
     useNavigationMock.mockReturnValue({
       navigate: jest.fn(),
+    } as never);
+    useQueryClientMock.mockReturnValue({
+      prefetchQuery: jest.fn(),
     } as never);
     useHomeCharactersMock.mockReturnValue({
       characters: [],
@@ -111,6 +123,9 @@ describe('HomeScreen', () => {
     useNavigationMock.mockReturnValue({
       navigate: jest.fn(),
     } as never);
+    useQueryClientMock.mockReturnValue({
+      prefetchQuery: jest.fn(),
+    } as never);
     useHomeCharactersMock.mockReturnValue({
       characters: [],
       isLoading: false,
@@ -131,6 +146,9 @@ describe('HomeScreen', () => {
     // Arrange
     useNavigationMock.mockReturnValue({
       navigate: jest.fn(),
+    } as never);
+    useQueryClientMock.mockReturnValue({
+      prefetchQuery: jest.fn(),
     } as never);
     useHomeCharactersMock.mockReturnValue({
       characters: [
@@ -178,6 +196,9 @@ describe('HomeScreen', () => {
     useNavigationMock.mockReturnValue({
       navigate: jest.fn(),
     } as never);
+    useQueryClientMock.mockReturnValue({
+      prefetchQuery: jest.fn(),
+    } as never);
     useHomeCharactersMock.mockReturnValue({
       characters: [],
       isLoading: false,
@@ -197,9 +218,13 @@ describe('HomeScreen', () => {
   test('navigates to character detail with the selected id', () => {
     // Arrange
     const navigate = jest.fn();
+    const prefetchQuery = jest.fn();
 
     useNavigationMock.mockReturnValue({
       navigate,
+    } as never);
+    useQueryClientMock.mockReturnValue({
+      prefetchQuery,
     } as never);
     useHomeCharactersMock.mockReturnValue({
       characters: [
@@ -231,5 +256,49 @@ describe('HomeScreen', () => {
     expect(navigate).toHaveBeenCalledWith(CHARACTER_DETAIL_ROUTE_NAME, {
       characterId: 1,
     });
+  });
+
+  test('prefetches character detail when a character is selected', () => {
+    // Arrange
+    const prefetchQuery = jest.fn();
+
+    useNavigationMock.mockReturnValue({
+      navigate: jest.fn(),
+    } as never);
+    useQueryClientMock.mockReturnValue({
+      prefetchQuery,
+    } as never);
+    useHomeCharactersMock.mockReturnValue({
+      characters: [
+        {
+          id: 1,
+          name: 'Rick Sanchez',
+          status: 'Alive',
+          gender: 'Male',
+          species: 'Human',
+          origin: {
+            name: 'Earth (C-137)',
+            url: 'https://rickandmortyapi.com/api/location/1',
+          },
+          image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+        },
+      ],
+      isLoading: false,
+      errorMessage: null,
+    });
+
+    // Act
+    const renderer = renderHomeScreen();
+    act(() => {
+      renderer.root.findByProps({ testID: 'home-card-press-first-character' })
+        .props.onPress();
+    });
+
+    // Assert
+    expect(prefetchQuery).toHaveBeenCalledWith(
+      expect.objectContaining({
+        queryKey: ['character-detail', 1],
+      }),
+    );
   });
 });
