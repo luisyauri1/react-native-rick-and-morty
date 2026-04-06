@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 import { type Character } from '../../../shared/types/character';
-import { getHomeCharacters } from '../api/get-home-characters';
 import { HOME_CHARACTERS_ERROR_MESSAGE } from '../constants/home.constants';
+import { homeCharactersQueryOptions } from '../queries/home-characters-query';
 
 type UseHomeCharactersResult = {
   characters: Character[];
@@ -11,45 +11,11 @@ type UseHomeCharactersResult = {
 };
 
 export function useHomeCharacters(): UseHomeCharactersResult {
-  const [characters, setCharacters] = useState<Character[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    async function loadCharacters() {
-      try {
-        const nextCharacters = await getHomeCharacters();
-
-        if (!isMounted) {
-          return;
-        }
-
-        setCharacters(nextCharacters);
-      } catch {
-        if (!isMounted) {
-          return;
-        }
-
-        setErrorMessage(HOME_CHARACTERS_ERROR_MESSAGE);
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    }
-
-    loadCharacters();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const { data, isLoading, error } = useQuery(homeCharactersQueryOptions());
 
   return {
-    characters,
+    characters: data ?? [],
     isLoading,
-    errorMessage,
+    errorMessage: error ? HOME_CHARACTERS_ERROR_MESSAGE : null,
   };
 }

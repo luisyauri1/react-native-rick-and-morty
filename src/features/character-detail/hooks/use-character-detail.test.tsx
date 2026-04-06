@@ -1,5 +1,10 @@
 import React from 'react';
 import { Text } from 'react-native';
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQueryClient,
+} from '@tanstack/react-query';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 
 import { getCharacterDetail } from '../api/get-character-detail';
@@ -13,22 +18,37 @@ const getCharacterDetailMock =
   getCharacterDetail as jest.MockedFunction<typeof getCharacterDetail>;
 
 let currentRenderer: ReactTestRenderer.ReactTestRenderer | null = null;
+let currentQueryClient: QueryClient | null = null;
 
 function HookHarness() {
   const { character, isLoading, errorMessage } = useCharacterDetail(1);
+  const queryClient = useQueryClient();
 
   return (
     <>
       <Text testID="hook-loading">{String(isLoading)}</Text>
       <Text testID="hook-error">{errorMessage ?? 'null'}</Text>
       <Text testID="hook-character-name">{character?.name ?? 'none'}</Text>
+      <Text testID="hook-query-client">{String(Boolean(queryClient))}</Text>
     </>
   );
 }
 
 function renderHookHarness() {
+  currentQueryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
+
   act(() => {
-    currentRenderer = ReactTestRenderer.create(<HookHarness />);
+    currentRenderer = ReactTestRenderer.create(
+      <QueryClientProvider client={currentQueryClient!}>
+        <HookHarness />
+      </QueryClientProvider>,
+    );
   });
 
   return currentRenderer!;
@@ -36,7 +56,15 @@ function renderHookHarness() {
 
 async function flushPendingUpdates() {
   await act(async () => {
-    await Promise.resolve();
+    await new Promise<void>(resolve => {
+      setTimeout(() => resolve(), 0);
+    });
+  });
+
+  await act(async () => {
+    await new Promise<void>(resolve => {
+      setTimeout(() => resolve(), 0);
+    });
   });
 }
 
@@ -51,6 +79,8 @@ describe('useCharacterDetail', () => {
     }
 
     currentRenderer = null;
+    currentQueryClient?.clear();
+    currentQueryClient = null;
   });
 
   test('requests the selected character when the hook mounts', async () => {
@@ -86,6 +116,19 @@ describe('useCharacterDetail', () => {
     // Assert
     expect(
       renderer.root.findByProps({ testID: 'hook-loading' }).props.children,
+    ).toBe('true');
+  });
+
+  test('receives the query client from the provider', () => {
+    // Arrange
+    getCharacterDetailMock.mockReturnValue(new Promise(() => undefined));
+
+    // Act
+    const renderer = renderHookHarness();
+
+    // Assert
+    expect(
+      renderer.root.findByProps({ testID: 'hook-query-client' }).props.children,
     ).toBe('true');
   });
 
