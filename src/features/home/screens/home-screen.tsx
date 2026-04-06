@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 
 import { colors } from '../../../shared/theme/colors';
 import { ScreenLayout } from '../../../shared/ui/screen-layout';
+import { HomeCharactersCard } from '../components/home-characters-card';
 import { useHomeCharacters } from '../hooks/use-home-characters';
 
 export function HomeScreen() {
@@ -12,34 +13,11 @@ export function HomeScreen() {
     <ScreenLayout>
       <Text style={styles.title}>The Rick and Morty API</Text>
       <Text style={styles.subtitle}>Home</Text>
-
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Primeros personajes</Text>
-
-        {isLoading ? (
-          <Text style={styles.cardDescription} testID="home-loading">
-            Cargando personajes...
-          </Text>
-        ) : null}
-
-        {errorMessage ? (
-          <Text style={styles.cardDescription} testID="home-error">
-            {errorMessage}
-          </Text>
-        ) : null}
-
-        {!isLoading && !errorMessage
-          ? characters.map(character => (
-              <Text
-                key={character.id}
-                style={styles.characterName}
-                testID={`home-character-${character.id}`}
-              >
-                {character.name}
-              </Text>
-            ))
-          : null}
-      </View>
+      <HomeCharactersCard
+        characters={characters}
+        isLoading={isLoading}
+        errorMessage={errorMessage}
+      />
     </ScreenLayout>
   );
 }
@@ -60,29 +38,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textTransform: 'uppercase',
     letterSpacing: 1.2,
-  },
-  card: {
-    width: '100%',
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: 24,
-  },
-  cardTitle: {
-    marginBottom: 12,
-    color: colors.text,
-    fontSize: 22,
-    fontWeight: '700',
-  },
-  cardDescription: {
-    color: colors.muted,
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  characterName: {
-    color: colors.text,
-    fontSize: 16,
-    lineHeight: 24,
   },
 });
