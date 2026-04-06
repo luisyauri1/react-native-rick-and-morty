@@ -1,9 +1,7 @@
-export type CharacterDetailStatus = 'Alive' | 'Dead' | 'unknown';
+import type {
+  Character,
+  CharacterStatus,
+} from '../../../shared/types/character';
 
-export type CharacterDetail = {
-  id: number;
-  name: string;
-  status: CharacterDetailStatus;
-  species: string;
-  image: string;
-};
+export type CharacterDetail = Character;
+export type CharacterDetailStatus = CharacterStatus;
