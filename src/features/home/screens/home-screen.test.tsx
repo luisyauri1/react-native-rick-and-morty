@@ -1,5 +1,4 @@
 import React from 'react';
-import { Text } from 'react-native';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 
 import { useHomeCharacters } from '../hooks/use-home-characters';
@@ -8,6 +7,14 @@ import { HomeScreen } from './home-screen';
 jest.mock('../hooks/use-home-characters', () => ({
   useHomeCharacters: jest.fn(),
 }));
+
+jest.mock('../components/home-header', () => {
+  const { Text: MockText } = require('react-native');
+
+  return {
+    HomeHeader: () => <MockText testID="home-header-present">header</MockText>,
+  };
+});
 
 jest.mock('../components/home-characters-card', () => {
   const { Text: MockText } = require('react-native');
@@ -79,7 +86,7 @@ describe('HomeScreen', () => {
     ).toBe('true');
   });
 
-  test('renders the screen title', () => {
+  test('renders the header component', () => {
     // Arrange
     useHomeCharactersMock.mockReturnValue({
       characters: [],
@@ -91,24 +98,10 @@ describe('HomeScreen', () => {
     const renderer = renderHomeScreen();
 
     // Assert
-    expect(renderer.root.findAllByType(Text)[0].props.children).toBe(
-      'The Rick and Morty API',
-    );
-  });
-
-  test('renders the screen subtitle', () => {
-    // Arrange
-    useHomeCharactersMock.mockReturnValue({
-      characters: [],
-      isLoading: false,
-      errorMessage: null,
-    });
-
-    // Act
-    const renderer = renderHomeScreen();
-
-    // Assert
-    expect(renderer.root.findAllByType(Text)[1].props.children).toBe('Home');
+    expect(
+      renderer.root.findByProps({ testID: 'home-header-present' }).props
+        .children,
+    ).toBe('header');
   });
 
   test('passes the character count to the card component', () => {
@@ -130,5 +123,23 @@ describe('HomeScreen', () => {
       renderer.root.findByProps({ testID: 'home-card-characters-count' }).props
         .children,
     ).toBe(2);
+  });
+
+  test('passes the error message to the card component', () => {
+    // Arrange
+    useHomeCharactersMock.mockReturnValue({
+      characters: [],
+      isLoading: false,
+      errorMessage: 'No pudimos cargar personajes.',
+    });
+
+    // Act
+    const renderer = renderHomeScreen();
+
+    // Assert
+    expect(
+      renderer.root.findByProps({ testID: 'home-card-error-value' }).props
+        .children,
+    ).toBe('No pudimos cargar personajes.');
   });
 });
