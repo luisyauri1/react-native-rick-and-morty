@@ -5,4 +5,5 @@ export type Character = {
   name: string;
   status: CharacterStatus;
   species: string;
+  image: string;
 };

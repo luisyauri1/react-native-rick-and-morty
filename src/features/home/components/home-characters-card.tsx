@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../../../shared/theme/colors';
 import { type Character } from '../types/character';
@@ -34,18 +34,25 @@ export function HomeCharactersCard({
       {!isLoading && !errorMessage
         ? characters.map(character => (
             <View key={character.id} style={styles.characterRow}>
-              <Text
-                style={styles.characterName}
-                testID={`home-character-${character.id}`}
-              >
-                {character.name}
-              </Text>
-              <Text
-                style={styles.characterMeta}
-                testID={`home-character-meta-${character.id}`}
-              >
-                {character.status} - {character.species}
-              </Text>
+              <Image
+                source={{ uri: character.image }}
+                style={styles.characterImage}
+                testID={`home-character-image-${character.id}`}
+              />
+              <View style={styles.characterContent}>
+                <Text
+                  style={styles.characterName}
+                  testID={`home-character-${character.id}`}
+                >
+                  {character.name}
+                </Text>
+                <Text
+                  style={styles.characterMeta}
+                  testID={`home-character-meta-${character.id}`}
+                >
+                  {character.status} - {character.species}
+                </Text>
+              </View>
             </View>
           ))
         : null}
@@ -84,6 +91,17 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   characterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 12,
+  },
+  characterImage: {
+    width: 56,
+    height: 56,
+    marginRight: 16,
+    borderRadius: 28,
+  },
+  characterContent: {
+    flex: 1,
   },
 });

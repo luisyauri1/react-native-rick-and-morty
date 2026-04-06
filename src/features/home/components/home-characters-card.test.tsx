@@ -65,7 +65,13 @@ describe('HomeCharactersCard', () => {
     // Act
     const renderer = renderHomeCharactersCard({
       characters: [
-        { id: 1, name: 'Rick Sanchez', status: 'Alive', species: 'Human' },
+        {
+          id: 1,
+          name: 'Rick Sanchez',
+          status: 'Alive',
+          species: 'Human',
+          image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+        },
       ],
     });
 
@@ -81,7 +87,13 @@ describe('HomeCharactersCard', () => {
     // Act
     const renderer = renderHomeCharactersCard({
       characters: [
-        { id: 1, name: 'Rick Sanchez', status: 'Alive', species: 'Human' },
+        {
+          id: 1,
+          name: 'Rick Sanchez',
+          status: 'Alive',
+          species: 'Human',
+          image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+        },
       ],
     });
 
@@ -90,6 +102,31 @@ describe('HomeCharactersCard', () => {
       renderer.root.findByProps({ testID: 'home-character-meta-1' }).props
         .children,
     ).toEqual(['Alive', ' - ', 'Human']);
+  });
+
+  test('renders the character image', () => {
+    // Arrange
+
+    // Act
+    const renderer = renderHomeCharactersCard({
+      characters: [
+        {
+          id: 1,
+          name: 'Rick Sanchez',
+          status: 'Alive',
+          species: 'Human',
+          image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+        },
+      ],
+    });
+
+    // Assert
+    expect(
+      renderer.root.findByProps({ testID: 'home-character-image-1' }).props
+        .source,
+    ).toEqual({
+      uri: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+    });
   });
 
   test('renders the error message when the request fails', () => {

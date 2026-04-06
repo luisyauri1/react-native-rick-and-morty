@@ -81,7 +81,13 @@ describe('useHomeCharacters', () => {
   test('stores the first loaded character after a successful request', async () => {
     // Arrange
     getHomeCharactersMock.mockResolvedValue([
-      { id: 1, name: 'Rick Sanchez', status: 'Alive', species: 'Human' },
+      {
+        id: 1,
+        name: 'Rick Sanchez',
+        status: 'Alive',
+        species: 'Human',
+        image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+      },
     ]);
 
     // Act
