@@ -2,9 +2,15 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
+import { APP_TITLE } from '../../../shared/constants/app.constants';
 import { PrimaryButton } from '../../../shared/ui/primary-button';
 import { ScreenLayout } from '../../../shared/ui/screen-layout';
 import { colors } from '../../../shared/theme/colors';
+import {
+  ACCESS_SCREEN_BADGE_TEXT,
+  ACCESS_SCREEN_BUTTON_LABEL,
+  ACCESS_SCREEN_DESCRIPTION,
+} from '../constants/access.constants';
 
 export function AccessScreen() {
   const navigation = useNavigation();
@@ -12,17 +18,14 @@ export function AccessScreen() {
   return (
     <ScreenLayout>
       <View style={styles.badge}>
-        <Text style={styles.badgeText}>Feature-based architecture</Text>
+        <Text style={styles.badgeText}>{ACCESS_SCREEN_BADGE_TEXT}</Text>
       </View>
 
-      <Text style={styles.title}>The Rick and Morty API</Text>
-      <Text style={styles.description}>
-        Una entrada simple con rutas para separar la pantalla inicial de la
-        home principal.
-      </Text>
+      <Text style={styles.title}>{APP_TITLE}</Text>
+      <Text style={styles.description}>{ACCESS_SCREEN_DESCRIPTION}</Text>
 
       <PrimaryButton
-        label="Ingresa"
+        label={ACCESS_SCREEN_BUTTON_LABEL}
         onPress={() => navigation.navigate('Home')}
       />
     </ScreenLayout>
