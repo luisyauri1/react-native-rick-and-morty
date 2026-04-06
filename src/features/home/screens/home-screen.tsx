@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { getJson } from '../../../shared/api/http-client';
 import { colors } from '../../../shared/theme/colors';
 import { ScreenLayout } from '../../../shared/ui/screen-layout';
-
-type Character = {
-  id: number;
-  name: string;
-};
-
-type CharacterListResponse = {
-  results: Character[];
-};
+import {
+  getHomeCharacters,
+  type Character,
+} from '../api/get-home-characters';
 
 export function HomeScreen() {
   const [characters, setCharacters] = useState<Character[]>([]);
@@ -24,13 +18,13 @@ export function HomeScreen() {
 
     async function loadCharacters() {
       try {
-        const response = await getJson<CharacterListResponse>('/character');
+        const nextCharacters = await getHomeCharacters();
 
         if (!isMounted) {
           return;
         }
 
-        setCharacters(response.results.slice(0, 5));
+        setCharacters(nextCharacters);
       } catch {
         if (!isMounted) {
           return;

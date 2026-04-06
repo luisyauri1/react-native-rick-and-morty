@@ -1,18 +1,19 @@
 import React from 'react';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 
-import { getJson } from '../../../shared/api/http-client';
+import { getHomeCharacters } from '../api/get-home-characters';
 import { HomeScreen } from './home-screen';
 
-jest.mock('../../../shared/api/http-client', () => ({
-  getJson: jest.fn(),
+jest.mock('../api/get-home-characters', () => ({
+  getHomeCharacters: jest.fn(),
 }));
 
 jest.mock('../../../shared/ui/screen-layout', () => ({
   ScreenLayout: ({ children }: { children: React.ReactNode }) => children,
 }));
 
-const getJsonMock = getJson as jest.MockedFunction<typeof getJson>;
+const getHomeCharactersMock =
+  getHomeCharacters as jest.MockedFunction<typeof getHomeCharacters>;
 
 let currentRenderer: ReactTestRenderer.ReactTestRenderer | null = null;
 
@@ -32,7 +33,7 @@ async function flushPendingUpdates() {
 
 describe('HomeScreen', () => {
   afterEach(() => {
-    getJsonMock.mockReset();
+    getHomeCharactersMock.mockReset();
 
     if (currentRenderer) {
       act(() => {
@@ -43,23 +44,21 @@ describe('HomeScreen', () => {
     currentRenderer = null;
   });
 
-  test('requests the character endpoint when the screen mounts', async () => {
+  test('requests home characters when the screen mounts', async () => {
     // Arrange
-    getJsonMock.mockResolvedValue({
-      results: [],
-    });
+    getHomeCharactersMock.mockResolvedValue([]);
 
     // Act
     renderHomeScreen();
     await flushPendingUpdates();
 
     // Assert
-    expect(getJsonMock).toHaveBeenCalledWith('/character');
+    expect(getHomeCharactersMock).toHaveBeenCalledWith();
   });
 
   test('renders the loading message while the request is pending', () => {
     // Arrange
-    getJsonMock.mockReturnValue(new Promise(() => undefined));
+    getHomeCharactersMock.mockReturnValue(new Promise(() => undefined));
 
     // Act
     const renderer = renderHomeScreen();
@@ -72,9 +71,7 @@ describe('HomeScreen', () => {
 
   test('renders the first character after a successful request', async () => {
     // Arrange
-    getJsonMock.mockResolvedValue({
-      results: [{ id: 1, name: 'Rick Sanchez' }],
-    });
+    getHomeCharactersMock.mockResolvedValue([{ id: 1, name: 'Rick Sanchez' }]);
 
     // Act
     renderHomeScreen();
@@ -89,7 +86,7 @@ describe('HomeScreen', () => {
 
   test('renders an error message when the request fails', async () => {
     // Arrange
-    getJsonMock.mockRejectedValue(new Error('Network error'));
+    getHomeCharactersMock.mockRejectedValue(new Error('Network error'));
 
     // Act
     renderHomeScreen();
