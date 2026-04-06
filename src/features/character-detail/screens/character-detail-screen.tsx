@@ -4,6 +4,10 @@ import { type StaticScreenProps } from '@react-navigation/native';
 
 import { ScreenLayout } from '../../../shared/ui/screen-layout';
 import { colors } from '../../../shared/theme/colors';
+import {
+  CHARACTER_DETAIL_LOADING_MESSAGE,
+  CHARACTER_DETAIL_TITLE,
+} from '../constants/character-detail.constants';
 import { useCharacterDetail } from '../hooks/use-character-detail';
 
 type Props = StaticScreenProps<{
@@ -18,11 +22,11 @@ export function CharacterDetailScreen({ route }: Props) {
   return (
     <ScreenLayout>
       <View style={styles.card}>
-        <Text style={styles.title}>Character Detail</Text>
+        <Text style={styles.title}>{CHARACTER_DETAIL_TITLE}</Text>
 
         {isLoading ? (
           <Text style={styles.description} testID="character-detail-loading">
-            Cargando detalle...
+            {CHARACTER_DETAIL_LOADING_MESSAGE}
           </Text>
         ) : null}
 

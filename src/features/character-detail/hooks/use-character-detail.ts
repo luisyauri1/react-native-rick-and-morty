@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { type Character } from '../../../shared/types/character';
 import { getCharacterDetail } from '../api/get-character-detail';
+import { CHARACTER_DETAIL_ERROR_MESSAGE } from '../constants/character-detail.constants';
 
 type UseCharacterDetailResult = {
   character: Character | null;
@@ -33,7 +34,7 @@ export function useCharacterDetail(
           return;
         }
 
-        setErrorMessage('No pudimos cargar el detalle del personaje.');
+        setErrorMessage(CHARACTER_DETAIL_ERROR_MESSAGE);
       } finally {
         if (isMounted) {
           setIsLoading(false);
