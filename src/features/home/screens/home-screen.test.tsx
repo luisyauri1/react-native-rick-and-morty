@@ -1,4 +1,5 @@
 import React from 'react';
+import { Text } from 'react-native';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 
 import { useHomeCharacters } from '../hooks/use-home-characters';
@@ -7,6 +8,28 @@ import { HomeScreen } from './home-screen';
 jest.mock('../hooks/use-home-characters', () => ({
   useHomeCharacters: jest.fn(),
 }));
+
+jest.mock('../components/home-characters-card', () => {
+  const { Text: MockText } = require('react-native');
+
+  return {
+    HomeCharactersCard: ({
+      characters,
+      isLoading,
+      errorMessage,
+    }: {
+      characters: { id: number; name: string }[];
+      isLoading: boolean;
+      errorMessage: string | null;
+    }) => (
+      <>
+        <MockText testID="home-card-characters-count">{characters.length}</MockText>
+        <MockText testID="home-card-loading-value">{String(isLoading)}</MockText>
+        <MockText testID="home-card-error-value">{errorMessage ?? 'null'}</MockText>
+      </>
+    ),
+  };
+});
 
 jest.mock('../../../shared/ui/screen-layout', () => ({
   ScreenLayout: ({ children }: { children: React.ReactNode }) => children,
@@ -23,12 +46,6 @@ function renderHomeScreen() {
   });
 
   return currentRenderer!;
-}
-
-async function flushPendingUpdates() {
-  await act(async () => {
-    await Promise.resolve();
-  });
 }
 
 describe('HomeScreen', () => {
@@ -57,45 +74,61 @@ describe('HomeScreen', () => {
 
     // Assert
     expect(
-      renderer.root.findByProps({ testID: 'home-loading' }).props.children,
-    ).toBe('Cargando personajes...');
+      renderer.root.findByProps({ testID: 'home-card-loading-value' }).props
+        .children,
+    ).toBe('true');
   });
 
-  test('renders the first character after a successful request', async () => {
+  test('renders the screen title', () => {
     // Arrange
     useHomeCharactersMock.mockReturnValue({
-      characters: [{ id: 1, name: 'Rick Sanchez' }],
+      characters: [],
       isLoading: false,
       errorMessage: null,
     });
 
     // Act
-    renderHomeScreen();
-    await flushPendingUpdates();
+    const renderer = renderHomeScreen();
 
     // Assert
-    expect(
-      currentRenderer!.root.findByProps({ testID: 'home-character-1' }).props
-        .children,
-    ).toBe('Rick Sanchez');
+    expect(renderer.root.findAllByType(Text)[0].props.children).toBe(
+      'The Rick and Morty API',
+    );
   });
 
-  test('renders an error message when the request fails', async () => {
+  test('renders the screen subtitle', () => {
     // Arrange
     useHomeCharactersMock.mockReturnValue({
       characters: [],
       isLoading: false,
-      errorMessage: 'No pudimos cargar personajes.',
+      errorMessage: null,
     });
 
     // Act
-    renderHomeScreen();
-    await flushPendingUpdates();
+    const renderer = renderHomeScreen();
+
+    // Assert
+    expect(renderer.root.findAllByType(Text)[1].props.children).toBe('Home');
+  });
+
+  test('passes the character count to the card component', () => {
+    // Arrange
+    useHomeCharactersMock.mockReturnValue({
+      characters: [
+        { id: 1, name: 'Rick Sanchez' },
+        { id: 2, name: 'Morty Smith' },
+      ],
+      isLoading: false,
+      errorMessage: null,
+    });
+
+    // Act
+    const renderer = renderHomeScreen();
 
     // Assert
     expect(
-      currentRenderer!.root.findByProps({ testID: 'home-error' }).props
+      renderer.root.findByProps({ testID: 'home-card-characters-count' }).props
         .children,
-    ).toBe('No pudimos cargar personajes.');
+    ).toBe(2);
   });
 });
