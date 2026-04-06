@@ -1,6 +1,6 @@
 import { getJson } from '../../../shared/api/http-client';
+import { type Character } from '../../../shared/types/character';
 import { HOME_CHARACTER_LIMIT } from '../constants/home.constants';
-import { type Character } from '../types/character';
 
 type CharacterListResponse = {
   results: Character[];

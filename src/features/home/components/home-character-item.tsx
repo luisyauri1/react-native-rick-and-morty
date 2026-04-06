@@ -2,7 +2,7 @@ import React from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../../../shared/theme/colors';
-import { type Character } from '../types/character';
+import { type Character } from '../../../shared/types/character';
 
 type HomeCharacterItemProps = {
   character: Character;

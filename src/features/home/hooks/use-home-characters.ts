@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
+import { type Character } from '../../../shared/types/character';
 import { getHomeCharacters } from '../api/get-home-characters';
 import { HOME_CHARACTERS_ERROR_MESSAGE } from '../constants/home.constants';
-import { type Character } from '../types/character';
 
 type UseHomeCharactersResult = {
   characters: Character[];

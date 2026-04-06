@@ -1,8 +1,8 @@
 import { getJson } from '../../../shared/api/http-client';
-import { type CharacterDetail } from '../types/character-detail';
+import { type Character } from '../../../shared/types/character';
 
 export async function getCharacterDetail(
   characterId: number,
-): Promise<CharacterDetail> {
-  return getJson<CharacterDetail>(`/character/${characterId}`);
+): Promise<Character> {
+  return getJson<Character>(`/character/${characterId}`);
 }

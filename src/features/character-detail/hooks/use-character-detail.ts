@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
+import { type Character } from '../../../shared/types/character';
 import { getCharacterDetail } from '../api/get-character-detail';
-import { type CharacterDetail } from '../types/character-detail';
 
 type UseCharacterDetailResult = {
-  character: CharacterDetail | null;
+  character: Character | null;
   isLoading: boolean;
   errorMessage: string | null;
 };
@@ -12,7 +12,7 @@ type UseCharacterDetailResult = {
 export function useCharacterDetail(
   characterId: number,
 ): UseCharacterDetailResult {
-  const [character, setCharacter] = useState<CharacterDetail | null>(null);
+  const [character, setCharacter] = useState<Character | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 

@@ -2,8 +2,8 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../../../shared/theme/colors';
+import { type Character } from '../../../shared/types/character';
 import { HomeCharacterItem } from './home-character-item';
-import { type Character } from '../types/character';
 
 type HomeCharactersCardProps = {
   characters: Character[];
