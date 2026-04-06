@@ -1,7 +1,10 @@
 import { QueryClient } from '@tanstack/react-query';
 
 import { getCharacterDetail } from '../api/get-character-detail';
-import { characterDetailQueryOptions } from './character-detail-query';
+import {
+  CHARACTER_DETAIL_STALE_TIME_MS,
+  characterDetailQueryOptions,
+} from './character-detail-query';
 
 jest.mock('../api/get-character-detail', () => ({
   getCharacterDetail: jest.fn(),
@@ -23,6 +26,16 @@ describe('characterDetailQueryOptions', () => {
 
     // Assert
     expect(options.queryKey).toEqual(['character-detail', 1]);
+  });
+
+  test('returns the configured stale time', () => {
+    // Arrange
+
+    // Act
+    const options = characterDetailQueryOptions(1);
+
+    // Assert
+    expect(options.staleTime).toBe(CHARACTER_DETAIL_STALE_TIME_MS);
   });
 
   test('uses the selected character request as query function', async () => {
