@@ -3,10 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../../../shared/theme/colors';
 import { ScreenLayout } from '../../../shared/ui/screen-layout';
-import {
-  getHomeCharacters,
-  type Character,
-} from '../api/get-home-characters';
+import { getHomeCharacters } from '../api/get-home-characters';
+import { type Character } from '../types/character';
 
 export function HomeScreen() {
   const [characters, setCharacters] = useState<Character[]>([]);

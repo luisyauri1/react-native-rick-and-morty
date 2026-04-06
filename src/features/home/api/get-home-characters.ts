@@ -1,9 +1,5 @@
 import { getJson } from '../../../shared/api/http-client';
-
-export type Character = {
-  id: number;
-  name: string;
-};
+import { type Character } from '../types/character';
 
 type CharacterListResponse = {
   results: Character[];
