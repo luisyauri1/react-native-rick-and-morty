@@ -9,12 +9,14 @@ type HomeCharactersCardProps = {
   characters: Character[];
   isLoading: boolean;
   errorMessage: string | null;
+  onPressCharacter: (character: Character) => void;
 };
 
 export function HomeCharactersCard({
   characters,
   isLoading,
   errorMessage,
+  onPressCharacter,
 }: HomeCharactersCardProps) {
   return (
     <View style={styles.card}>
@@ -34,7 +36,11 @@ export function HomeCharactersCard({
 
       {!isLoading && !errorMessage
         ? characters.map(character => (
-            <HomeCharacterItem key={character.id} character={character} />
+            <HomeCharacterItem
+              key={character.id}
+              character={character}
+              onPress={onPressCharacter}
+            />
           ))
         : null}
     </View>

@@ -1,8 +1,13 @@
 import React from 'react';
 import ReactTestRenderer, { act } from 'react-test-renderer';
+import { useNavigation } from '@react-navigation/native';
 
 import { useHomeCharacters } from '../hooks/use-home-characters';
 import { HomeScreen } from './home-screen';
+
+jest.mock('@react-navigation/native', () => ({
+  useNavigation: jest.fn(),
+}));
 
 jest.mock('../hooks/use-home-characters', () => ({
   useHomeCharacters: jest.fn(),
@@ -24,15 +29,23 @@ jest.mock('../components/home-characters-card', () => {
       characters,
       isLoading,
       errorMessage,
+      onPressCharacter,
     }: {
       characters: { id: number; name: string }[];
       isLoading: boolean;
       errorMessage: string | null;
+      onPressCharacter: (character: { id: number; name: string }) => void;
     }) => (
       <>
         <MockText testID="home-card-characters-count">{characters.length}</MockText>
         <MockText testID="home-card-loading-value">{String(isLoading)}</MockText>
         <MockText testID="home-card-error-value">{errorMessage ?? 'null'}</MockText>
+        <MockText
+          testID="home-card-press-first-character"
+          onPress={() => onPressCharacter(characters[0])}
+        >
+          press-first-character
+        </MockText>
       </>
     ),
   };
@@ -44,6 +57,8 @@ jest.mock('../../../shared/ui/screen-layout', () => ({
 
 const useHomeCharactersMock =
   useHomeCharacters as jest.MockedFunction<typeof useHomeCharacters>;
+const useNavigationMock =
+  useNavigation as jest.MockedFunction<typeof useNavigation>;
 
 let currentRenderer: ReactTestRenderer.ReactTestRenderer | null = null;
 
@@ -57,6 +72,7 @@ function renderHomeScreen() {
 
 describe('HomeScreen', () => {
   afterEach(() => {
+    useNavigationMock.mockReset();
     useHomeCharactersMock.mockReset();
 
     if (currentRenderer) {
@@ -70,6 +86,9 @@ describe('HomeScreen', () => {
 
   test('renders the loading message when the hook is loading', () => {
     // Arrange
+    useNavigationMock.mockReturnValue({
+      navigate: jest.fn(),
+    } as never);
     useHomeCharactersMock.mockReturnValue({
       characters: [],
       isLoading: true,
@@ -88,6 +107,9 @@ describe('HomeScreen', () => {
 
   test('renders the header component', () => {
     // Arrange
+    useNavigationMock.mockReturnValue({
+      navigate: jest.fn(),
+    } as never);
     useHomeCharactersMock.mockReturnValue({
       characters: [],
       isLoading: false,
@@ -106,6 +128,9 @@ describe('HomeScreen', () => {
 
   test('passes the character count to the card component', () => {
     // Arrange
+    useNavigationMock.mockReturnValue({
+      navigate: jest.fn(),
+    } as never);
     useHomeCharactersMock.mockReturnValue({
       characters: [
         {
@@ -139,6 +164,9 @@ describe('HomeScreen', () => {
 
   test('passes the error message to the card component', () => {
     // Arrange
+    useNavigationMock.mockReturnValue({
+      navigate: jest.fn(),
+    } as never);
     useHomeCharactersMock.mockReturnValue({
       characters: [],
       isLoading: false,
@@ -153,5 +181,39 @@ describe('HomeScreen', () => {
       renderer.root.findByProps({ testID: 'home-card-error-value' }).props
         .children,
     ).toBe('No pudimos cargar personajes.');
+  });
+
+  test('navigates to character detail with the selected id', () => {
+    // Arrange
+    const navigate = jest.fn();
+
+    useNavigationMock.mockReturnValue({
+      navigate,
+    } as never);
+    useHomeCharactersMock.mockReturnValue({
+      characters: [
+        {
+          id: 1,
+          name: 'Rick Sanchez',
+          status: 'Alive',
+          species: 'Human',
+          image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+        },
+      ],
+      isLoading: false,
+      errorMessage: null,
+    });
+
+    // Act
+    const renderer = renderHomeScreen();
+    act(() => {
+      renderer.root.findByProps({ testID: 'home-card-press-first-character' })
+        .props.onPress();
+    });
+
+    // Assert
+    expect(navigate).toHaveBeenCalledWith('CharacterDetail', {
+      characterId: 1,
+    });
   });
 });

@@ -5,18 +5,23 @@ import { HomeCharacterItem } from './home-character-item';
 
 let currentRenderer: ReactTestRenderer.ReactTestRenderer | null = null;
 
-function renderHomeCharacterItem() {
+function renderHomeCharacterItem(
+  overrides: Partial<React.ComponentProps<typeof HomeCharacterItem>> = {},
+) {
+  const defaultProps: React.ComponentProps<typeof HomeCharacterItem> = {
+    character: {
+      id: 1,
+      name: 'Rick Sanchez',
+      status: 'Alive',
+      species: 'Human',
+      image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+    },
+    onPress: jest.fn(),
+  };
+
   act(() => {
     currentRenderer = ReactTestRenderer.create(
-      <HomeCharacterItem
-        character={{
-          id: 1,
-          name: 'Rick Sanchez',
-          status: 'Alive',
-          species: 'Human',
-          image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
-        }}
-      />,
+      <HomeCharacterItem {...defaultProps} {...overrides} />,
     );
   });
 
@@ -71,6 +76,27 @@ describe('HomeCharacterItem', () => {
         .source,
     ).toEqual({
       uri: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+    });
+  });
+
+  test('calls onPress with the selected character', () => {
+    // Arrange
+    const onPress = jest.fn();
+    const renderer = renderHomeCharacterItem({ onPress });
+
+    // Act
+    act(() => {
+      renderer.root.findByProps({ testID: 'home-character-pressable-1' }).props
+        .onPress();
+    });
+
+    // Assert
+    expect(onPress).toHaveBeenCalledWith({
+      id: 1,
+      name: 'Rick Sanchez',
+      status: 'Alive',
+      species: 'Human',
+      image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
     });
   });
 });

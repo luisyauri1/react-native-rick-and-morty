@@ -13,6 +13,7 @@ function renderHomeCharactersCard(
     characters: [],
     isLoading: false,
     errorMessage: null,
+    onPressCharacter: jest.fn(),
   };
 
   act(() => {
@@ -141,5 +142,37 @@ describe('HomeCharactersCard', () => {
     expect(
       renderer.root.findByProps({ testID: 'home-error' }).props.children,
     ).toBe('No pudimos cargar personajes.');
+  });
+
+  test('calls onPressCharacter with the selected character', () => {
+    // Arrange
+    const onPressCharacter = jest.fn();
+    const renderer = renderHomeCharactersCard({
+      onPressCharacter,
+      characters: [
+        {
+          id: 1,
+          name: 'Rick Sanchez',
+          status: 'Alive',
+          species: 'Human',
+          image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+        },
+      ],
+    });
+
+    // Act
+    act(() => {
+      renderer.root.findByProps({ testID: 'home-character-pressable-1' }).props
+        .onPress();
+    });
+
+    // Assert
+    expect(onPressCharacter).toHaveBeenCalledWith({
+      id: 1,
+      name: 'Rick Sanchez',
+      status: 'Alive',
+      species: 'Human',
+      image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+    });
   });
 });

@@ -1,16 +1,25 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../../../shared/theme/colors';
 import { type Character } from '../types/character';
 
 type HomeCharacterItemProps = {
   character: Character;
+  onPress: (character: Character) => void;
 };
 
-export function HomeCharacterItem({ character }: HomeCharacterItemProps) {
+export function HomeCharacterItem({
+  character,
+  onPress,
+}: HomeCharacterItemProps) {
   return (
-    <View style={styles.characterRow}>
+    <Pressable
+      accessibilityRole="button"
+      onPress={() => onPress(character)}
+      style={styles.characterRow}
+      testID={`home-character-pressable-${character.id}`}
+    >
       <Image
         source={{ uri: character.image }}
         style={styles.characterImage}
@@ -27,7 +36,7 @@ export function HomeCharacterItem({ character }: HomeCharacterItemProps) {
           {character.status} - {character.species}
         </Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
