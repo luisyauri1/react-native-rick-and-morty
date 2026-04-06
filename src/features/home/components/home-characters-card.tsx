@@ -1,7 +1,8 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../../../shared/theme/colors';
+import { HomeCharacterItem } from './home-character-item';
 import { type Character } from '../types/character';
 
 type HomeCharactersCardProps = {
@@ -33,27 +34,7 @@ export function HomeCharactersCard({
 
       {!isLoading && !errorMessage
         ? characters.map(character => (
-            <View key={character.id} style={styles.characterRow}>
-              <Image
-                source={{ uri: character.image }}
-                style={styles.characterImage}
-                testID={`home-character-image-${character.id}`}
-              />
-              <View style={styles.characterContent}>
-                <Text
-                  style={styles.characterName}
-                  testID={`home-character-${character.id}`}
-                >
-                  {character.name}
-                </Text>
-                <Text
-                  style={styles.characterMeta}
-                  testID={`home-character-meta-${character.id}`}
-                >
-                  {character.status} - {character.species}
-                </Text>
-              </View>
-            </View>
+            <HomeCharacterItem key={character.id} character={character} />
           ))
         : null}
     </View>
@@ -79,29 +60,5 @@ const styles = StyleSheet.create({
     color: colors.muted,
     fontSize: 16,
     lineHeight: 24,
-  },
-  characterName: {
-    color: colors.text,
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  characterMeta: {
-    color: colors.muted,
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  characterRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  characterImage: {
-    width: 56,
-    height: 56,
-    marginRight: 16,
-    borderRadius: 28,
-  },
-  characterContent: {
-    flex: 1,
   },
 });
