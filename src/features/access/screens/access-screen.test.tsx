@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 
+import { HOME_ROUTE_NAME } from '../../../app/navigation/route-names';
 import { APP_TITLE } from '../../../shared/constants/app.constants';
 import {
   ACCESS_SCREEN_BADGE_TEXT,
@@ -140,6 +141,6 @@ describe('AccessScreen', () => {
     });
 
     // Assert
-    expect(navigate).toHaveBeenCalledWith('Home');
+    expect(navigate).toHaveBeenCalledWith(HOME_ROUTE_NAME);
   });
 });

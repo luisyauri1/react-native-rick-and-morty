@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { type StaticScreenProps } from '@react-navigation/native';
 
 import { ScreenLayout } from '../../../shared/ui/screen-layout';
+import { SurfaceCard } from '../../../shared/ui/surface-card';
 import { colors } from '../../../shared/theme/colors';
 import { CharacterDetailProfile } from '../components/character-detail-profile';
 import {
@@ -10,10 +11,9 @@ import {
   CHARACTER_DETAIL_TITLE,
 } from '../constants/character-detail.constants';
 import { useCharacterDetail } from '../hooks/use-character-detail';
+import { type CharacterDetailRouteParams } from '../types/character-detail-route-params';
 
-type Props = StaticScreenProps<{
-  characterId: number;
-}>;
+type Props = StaticScreenProps<CharacterDetailRouteParams>;
 
 export function CharacterDetailScreen({ route }: Props) {
   const { character, isLoading, errorMessage } = useCharacterDetail(
@@ -22,7 +22,7 @@ export function CharacterDetailScreen({ route }: Props) {
 
   return (
     <ScreenLayout>
-      <View style={styles.card}>
+      <SurfaceCard>
         <Text style={styles.title}>{CHARACTER_DETAIL_TITLE}</Text>
 
         {isLoading ? (
@@ -40,20 +40,12 @@ export function CharacterDetailScreen({ route }: Props) {
         {!isLoading && !errorMessage && character ? (
           <CharacterDetailProfile character={character} />
         ) : null}
-      </View>
+      </SurfaceCard>
     </ScreenLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  card: {
-    width: '100%',
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-    padding: 24,
-  },
   title: {
     marginBottom: 12,
     color: colors.text,

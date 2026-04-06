@@ -2,6 +2,7 @@ import React from 'react';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 import { useNavigation } from '@react-navigation/native';
 
+import { CHARACTER_DETAIL_ROUTE_NAME } from '../../../app/navigation/route-names';
 import { useHomeCharacters } from '../hooks/use-home-characters';
 import { HomeScreen } from './home-screen';
 
@@ -212,7 +213,7 @@ describe('HomeScreen', () => {
     });
 
     // Assert
-    expect(navigate).toHaveBeenCalledWith('CharacterDetail', {
+    expect(navigate).toHaveBeenCalledWith(CHARACTER_DETAIL_ROUTE_NAME, {
       characterId: 1,
     });
   });

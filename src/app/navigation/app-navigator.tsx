@@ -10,9 +10,14 @@ import { CharacterDetailScreen } from '../../features/character-detail/screens/c
 import { HOME_SCREEN_SUBTITLE } from '../../features/home/constants/home.constants';
 import { HomeScreen } from '../../features/home/screens/home-screen';
 import { colors } from '../../shared/theme/colors';
+import {
+  ACCESS_ROUTE_NAME,
+  CHARACTER_DETAIL_ROUTE_NAME,
+  HOME_ROUTE_NAME,
+} from './route-names';
 
 const RootStack = createNativeStackNavigator({
-  initialRouteName: 'Access',
+  initialRouteName: ACCESS_ROUTE_NAME,
   screenOptions: {
     headerStyle: {
       backgroundColor: colors.background,
@@ -27,19 +32,19 @@ const RootStack = createNativeStackNavigator({
     },
   },
   screens: {
-    Access: {
+    [ACCESS_ROUTE_NAME]: {
       screen: AccessScreen,
       options: {
         headerShown: false,
       },
     },
-    Home: {
+    [HOME_ROUTE_NAME]: {
       screen: HomeScreen,
       options: {
         title: HOME_SCREEN_SUBTITLE,
       },
     },
-    CharacterDetail: {
+    [CHARACTER_DETAIL_ROUTE_NAME]: {
       screen: CharacterDetailScreen,
       options: {
         title: CHARACTER_DETAIL_TITLE,

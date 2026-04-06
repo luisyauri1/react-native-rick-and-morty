@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
+import { HOME_ROUTE_NAME } from '../../../app/navigation/route-names';
 import { APP_TITLE } from '../../../shared/constants/app.constants';
 import { PrimaryButton } from '../../../shared/ui/primary-button';
 import { ScreenLayout } from '../../../shared/ui/screen-layout';
@@ -32,7 +33,7 @@ export function AccessScreen() {
 
       <PrimaryButton
         label={ACCESS_SCREEN_BUTTON_LABEL}
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => navigation.navigate(HOME_ROUTE_NAME)}
       />
     </ScreenLayout>
   );
