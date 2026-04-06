@@ -90,7 +90,12 @@ describe('CharacterDetailScreen', () => {
         id: 1,
         name: 'Rick Sanchez',
         status: 'Alive',
+        gender: 'Male',
         species: 'Human',
+        origin: {
+          name: 'Earth (C-137)',
+          url: 'https://rickandmortyapi.com/api/location/1',
+        },
         image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
       },
       isLoading: false,

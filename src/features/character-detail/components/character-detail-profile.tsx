@@ -4,6 +4,8 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 import { colors } from '../../../shared/theme/colors';
 import { type Character } from '../../../shared/types/character';
 import {
+  CHARACTER_DETAIL_GENDER_LABEL,
+  CHARACTER_DETAIL_ORIGIN_LABEL,
   CHARACTER_DETAIL_PROFILE_BADGE_TEXT,
   CHARACTER_DETAIL_SPECIES_LABEL,
   CHARACTER_DETAIL_STATUS_LABEL,
@@ -49,6 +51,22 @@ export function CharacterDetailProfile({
           </Text>
           <Text style={styles.metaValue} testID="character-detail-species">
             {character.species}
+          </Text>
+        </View>
+        <View style={styles.metaCard}>
+          <Text style={styles.metaLabel} testID="character-detail-gender-label">
+            {CHARACTER_DETAIL_GENDER_LABEL}
+          </Text>
+          <Text style={styles.metaValue} testID="character-detail-gender">
+            {character.gender}
+          </Text>
+        </View>
+        <View style={styles.metaCard}>
+          <Text style={styles.metaLabel} testID="character-detail-origin-label">
+            {CHARACTER_DETAIL_ORIGIN_LABEL}
+          </Text>
+          <Text style={styles.metaValue} testID="character-detail-origin">
+            {character.origin.name}
           </Text>
         </View>
       </View>

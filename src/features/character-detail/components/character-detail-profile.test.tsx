@@ -2,6 +2,8 @@ import React from 'react';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 
 import {
+  CHARACTER_DETAIL_GENDER_LABEL,
+  CHARACTER_DETAIL_ORIGIN_LABEL,
   CHARACTER_DETAIL_PROFILE_BADGE_TEXT,
   CHARACTER_DETAIL_SPECIES_LABEL,
   CHARACTER_DETAIL_STATUS_LABEL,
@@ -18,7 +20,12 @@ function renderCharacterDetailProfile(
       id: 1,
       name: 'Rick Sanchez',
       status: 'Alive',
+      gender: 'Male',
       species: 'Human',
+      origin: {
+        name: 'Earth (C-137)',
+        url: 'https://rickandmortyapi.com/api/location/1',
+      },
       image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
     },
   };
@@ -82,6 +89,32 @@ describe('CharacterDetailProfile', () => {
     ).toBe(CHARACTER_DETAIL_SPECIES_LABEL);
   });
 
+  test('renders the gender label', () => {
+    // Arrange
+
+    // Act
+    const renderer = renderCharacterDetailProfile();
+
+    // Assert
+    expect(
+      renderer.root.findByProps({ testID: 'character-detail-gender-label' })
+        .props.children,
+    ).toBe(CHARACTER_DETAIL_GENDER_LABEL);
+  });
+
+  test('renders the origin label', () => {
+    // Arrange
+
+    // Act
+    const renderer = renderCharacterDetailProfile();
+
+    // Assert
+    expect(
+      renderer.root.findByProps({ testID: 'character-detail-origin-label' })
+        .props.children,
+    ).toBe(CHARACTER_DETAIL_ORIGIN_LABEL);
+  });
+
   test('renders the selected character image', () => {
     // Arrange
 
@@ -134,5 +167,31 @@ describe('CharacterDetailProfile', () => {
       renderer.root.findByProps({ testID: 'character-detail-species' }).props
         .children,
     ).toBe('Human');
+  });
+
+  test('renders the selected character gender', () => {
+    // Arrange
+
+    // Act
+    const renderer = renderCharacterDetailProfile();
+
+    // Assert
+    expect(
+      renderer.root.findByProps({ testID: 'character-detail-gender' }).props
+        .children,
+    ).toBe('Male');
+  });
+
+  test('renders the selected character origin', () => {
+    // Arrange
+
+    // Act
+    const renderer = renderCharacterDetailProfile();
+
+    // Assert
+    expect(
+      renderer.root.findByProps({ testID: 'character-detail-origin' }).props
+        .children,
+    ).toBe('Earth (C-137)');
   });
 });
