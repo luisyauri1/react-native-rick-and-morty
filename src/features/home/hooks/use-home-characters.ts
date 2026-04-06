@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { getHomeCharacters } from '../api/get-home-characters';
+import { HOME_CHARACTERS_ERROR_MESSAGE } from '../constants/home.constants';
 import { type Character } from '../types/character';
 
 type UseHomeCharactersResult = {
@@ -31,7 +32,7 @@ export function useHomeCharacters(): UseHomeCharactersResult {
           return;
         }
 
-        setErrorMessage('No pudimos cargar personajes.');
+        setErrorMessage(HOME_CHARACTERS_ERROR_MESSAGE);
       } finally {
         if (isMounted) {
           setIsLoading(false);
