@@ -54,18 +54,22 @@ export function HomeScreen() {
           searchValue={searchValue}
           selectedStatus={selectedStatus}
         />
-        <HomeFilters
-          onChangeSearch={setSearchValue}
-          onChangeStatus={setSelectedStatus}
-          searchValue={searchValue}
-          selectedStatus={selectedStatus}
-        />
-        <HomeCharactersCard
-          characters={characters}
-          isLoading={isLoading}
-          errorMessage={errorMessage}
-          onPressCharacter={handlePressCharacter}
-        />
+        <View style={styles.filtersSection}>
+          <HomeFilters
+            onChangeSearch={setSearchValue}
+            onChangeStatus={setSelectedStatus}
+            searchValue={searchValue}
+            selectedStatus={selectedStatus}
+          />
+        </View>
+        <View style={styles.resultsSection}>
+          <HomeCharactersCard
+            characters={characters}
+            isLoading={isLoading}
+            errorMessage={errorMessage}
+            onPressCharacter={handlePressCharacter}
+          />
+        </View>
       </ScrollView>
     </ScreenLayout>
   );
@@ -95,5 +99,11 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingBottom: 28,
+  },
+  filtersSection: {
+    marginBottom: 18,
+  },
+  resultsSection: {
+    marginBottom: 8,
   },
 });
