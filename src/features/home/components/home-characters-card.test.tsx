@@ -2,6 +2,7 @@ import React from 'react';
 import { Text } from 'react-native';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 
+import { formatCharacterMeta } from '../utils/format-character-meta';
 import { HomeCharactersCard } from './home-characters-card';
 
 let currentRenderer: ReactTestRenderer.ReactTestRenderer | null = null;
@@ -102,7 +103,12 @@ describe('HomeCharactersCard', () => {
     expect(
       renderer.root.findByProps({ testID: 'home-character-meta-1' }).props
         .children,
-    ).toEqual(['Alive', ' - ', 'Human']);
+    ).toBe(
+      formatCharacterMeta({
+        status: 'Alive',
+        species: 'Human',
+      }),
+    );
   });
 
   test('renders the character image', () => {

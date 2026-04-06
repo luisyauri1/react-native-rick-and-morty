@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 
+import { formatCharacterMeta } from '../utils/format-character-meta';
 import { HomeCharacterItem } from './home-character-item';
 
 let currentRenderer: ReactTestRenderer.ReactTestRenderer | null = null;
@@ -61,7 +62,12 @@ describe('HomeCharacterItem', () => {
     expect(
       renderer.root.findByProps({ testID: 'home-character-meta-1' }).props
         .children,
-    ).toEqual(['Alive', ' - ', 'Human']);
+    ).toBe(
+      formatCharacterMeta({
+        status: 'Alive',
+        species: 'Human',
+      }),
+    );
   });
 
   test('renders the character image', () => {

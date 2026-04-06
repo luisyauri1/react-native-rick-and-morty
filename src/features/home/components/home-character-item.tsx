@@ -3,6 +3,7 @@ import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../../../shared/theme/colors';
 import { type Character } from '../../../shared/types/character';
+import { formatCharacterMeta } from '../utils/format-character-meta';
 
 type HomeCharacterItemProps = {
   character: Character;
@@ -33,7 +34,7 @@ export function HomeCharacterItem({
           style={styles.characterMeta}
           testID={`home-character-meta-${character.id}`}
         >
-          {character.status} - {character.species}
+          {formatCharacterMeta(character)}
         </Text>
       </View>
     </Pressable>

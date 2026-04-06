@@ -1,7 +1,11 @@
 import React from 'react';
-import { Text } from 'react-native';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 
+import {
+  CHARACTER_DETAIL_PROFILE_BADGE_TEXT,
+  CHARACTER_DETAIL_SPECIES_LABEL,
+  CHARACTER_DETAIL_STATUS_LABEL,
+} from '../constants/character-detail.constants';
 import { CharacterDetailProfile } from './character-detail-profile';
 
 let currentRenderer: ReactTestRenderer.ReactTestRenderer | null = null;
@@ -46,9 +50,36 @@ describe('CharacterDetailProfile', () => {
     const renderer = renderCharacterDetailProfile();
 
     // Assert
-    expect(renderer.root.findAllByType(Text)[0].props.children).toBe(
-      'Character profile',
-    );
+    expect(
+      renderer.root.findByProps({ testID: 'character-detail-badge-text' }).props
+        .children,
+    ).toBe(CHARACTER_DETAIL_PROFILE_BADGE_TEXT);
+  });
+
+  test('renders the status label', () => {
+    // Arrange
+
+    // Act
+    const renderer = renderCharacterDetailProfile();
+
+    // Assert
+    expect(
+      renderer.root.findByProps({ testID: 'character-detail-status-label' })
+        .props.children,
+    ).toBe(CHARACTER_DETAIL_STATUS_LABEL);
+  });
+
+  test('renders the species label', () => {
+    // Arrange
+
+    // Act
+    const renderer = renderCharacterDetailProfile();
+
+    // Assert
+    expect(
+      renderer.root.findByProps({ testID: 'character-detail-species-label' })
+        .props.children,
+    ).toBe(CHARACTER_DETAIL_SPECIES_LABEL);
   });
 
   test('renders the selected character image', () => {

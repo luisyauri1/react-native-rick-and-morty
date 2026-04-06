@@ -3,6 +3,11 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../../../shared/theme/colors';
 import { type Character } from '../../../shared/types/character';
+import {
+  CHARACTER_DETAIL_PROFILE_BADGE_TEXT,
+  CHARACTER_DETAIL_SPECIES_LABEL,
+  CHARACTER_DETAIL_STATUS_LABEL,
+} from '../constants/character-detail.constants';
 
 type CharacterDetailProfileProps = {
   character: Character;
@@ -14,7 +19,9 @@ export function CharacterDetailProfile({
   return (
     <>
       <View style={styles.badge}>
-        <Text style={styles.badgeText}>Character profile</Text>
+        <Text style={styles.badgeText} testID="character-detail-badge-text">
+          {CHARACTER_DETAIL_PROFILE_BADGE_TEXT}
+        </Text>
       </View>
       <Image
         source={{ uri: character.image }}
@@ -26,13 +33,20 @@ export function CharacterDetailProfile({
       </Text>
       <View style={styles.metaGrid}>
         <View style={styles.metaCard}>
-          <Text style={styles.metaLabel}>Status</Text>
+          <Text style={styles.metaLabel} testID="character-detail-status-label">
+            {CHARACTER_DETAIL_STATUS_LABEL}
+          </Text>
           <Text style={styles.metaValue} testID="character-detail-status">
             {character.status}
           </Text>
         </View>
         <View style={styles.metaCard}>
-          <Text style={styles.metaLabel}>Species</Text>
+          <Text
+            style={styles.metaLabel}
+            testID="character-detail-species-label"
+          >
+            {CHARACTER_DETAIL_SPECIES_LABEL}
+          </Text>
           <Text style={styles.metaValue} testID="character-detail-species">
             {character.species}
           </Text>
