@@ -18,11 +18,17 @@ export function AccessScreen() {
   return (
     <ScreenLayout>
       <View style={styles.badge}>
-        <Text style={styles.badgeText}>{ACCESS_SCREEN_BADGE_TEXT}</Text>
+        <Text style={styles.badgeText} testID="access-badge-text">
+          {ACCESS_SCREEN_BADGE_TEXT}
+        </Text>
       </View>
 
-      <Text style={styles.title}>{APP_TITLE}</Text>
-      <Text style={styles.description}>{ACCESS_SCREEN_DESCRIPTION}</Text>
+      <Text style={styles.title} testID="access-title">
+        {APP_TITLE}
+      </Text>
+      <Text style={styles.description} testID="access-description">
+        {ACCESS_SCREEN_DESCRIPTION}
+      </Text>
 
       <PrimaryButton
         label={ACCESS_SCREEN_BUTTON_LABEL}

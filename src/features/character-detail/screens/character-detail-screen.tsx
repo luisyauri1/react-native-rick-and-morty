@@ -1,9 +1,10 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { type StaticScreenProps } from '@react-navigation/native';
 
 import { ScreenLayout } from '../../../shared/ui/screen-layout';
 import { colors } from '../../../shared/theme/colors';
+import { CharacterDetailProfile } from '../components/character-detail-profile';
 import {
   CHARACTER_DETAIL_LOADING_MESSAGE,
   CHARACTER_DETAIL_TITLE,
@@ -37,19 +38,7 @@ export function CharacterDetailScreen({ route }: Props) {
         ) : null}
 
         {!isLoading && !errorMessage && character ? (
-          <>
-            <Image
-              source={{ uri: character.image }}
-              style={styles.image}
-              testID="character-detail-image"
-            />
-            <Text style={styles.name} testID="character-detail-name">
-              {character.name}
-            </Text>
-            <Text style={styles.description} testID="character-detail-meta">
-              {character.status} - {character.species}
-            </Text>
-          </>
+          <CharacterDetailProfile character={character} />
         ) : null}
       </View>
     </ScreenLayout>
@@ -71,21 +60,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '700',
   },
-  name: {
-    marginBottom: 8,
-    color: colors.text,
-    fontSize: 22,
-    fontWeight: '700',
-  },
   description: {
     color: colors.muted,
     fontSize: 16,
     lineHeight: 24,
-  },
-  image: {
-    width: 120,
-    height: 120,
-    marginBottom: 16,
-    borderRadius: 60,
   },
 });
