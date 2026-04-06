@@ -1,21 +1,88 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { ScreenLayout } from '../../../shared/ui/screen-layout';
+import { getJson } from '../../../shared/api/http-client';
 import { colors } from '../../../shared/theme/colors';
+import { ScreenLayout } from '../../../shared/ui/screen-layout';
+
+type Character = {
+  id: number;
+  name: string;
+};
+
+type CharacterListResponse = {
+  results: Character[];
+};
 
 export function HomeScreen() {
+  const [characters, setCharacters] = useState<Character[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadCharacters() {
+      try {
+        const response = await getJson<CharacterListResponse>('/character');
+
+        if (!isMounted) {
+          return;
+        }
+
+        setCharacters(response.results.slice(0, 5));
+      } catch {
+        if (!isMounted) {
+          return;
+        }
+
+        setErrorMessage('No pudimos cargar personajes.');
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadCharacters();
+
+    return () => {
+      // Prevents state updates if the screen unmounts before the request ends.
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <ScreenLayout>
       <Text style={styles.title}>The Rick and Morty API</Text>
       <Text style={styles.subtitle}>Home</Text>
 
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>Bienvenido</Text>
-        <Text style={styles.cardDescription}>
-          La navegación ya está conectada y la estructura quedó separada por
-          features para seguir escalando la app.
-        </Text>
+        <Text style={styles.cardTitle}>Primeros personajes</Text>
+
+        {isLoading ? (
+          <Text style={styles.cardDescription} testID="home-loading">
+            Cargando personajes...
+          </Text>
+        ) : null}
+
+        {errorMessage ? (
+          <Text style={styles.cardDescription} testID="home-error">
+            {errorMessage}
+          </Text>
+        ) : null}
+
+        {!isLoading && !errorMessage
+          ? characters.map(character => (
+              <Text
+                key={character.id}
+                style={styles.characterName}
+                testID={`home-character-${character.id}`}
+              >
+                {character.name}
+              </Text>
+            ))
+          : null}
       </View>
     </ScreenLayout>
   );
@@ -54,6 +121,11 @@ const styles = StyleSheet.create({
   },
   cardDescription: {
     color: colors.muted,
+    fontSize: 16,
+    lineHeight: 24,
+  },
+  characterName: {
+    color: colors.text,
     fontSize: 16,
     lineHeight: 24,
   },
