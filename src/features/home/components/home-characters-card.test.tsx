@@ -165,6 +165,18 @@ describe('HomeCharactersCard', () => {
     ).toBe('No pudimos cargar personajes.');
   });
 
+  test('renders the empty message when there are no characters', () => {
+    // Arrange
+
+    // Act
+    const renderer = renderHomeCharactersCard();
+
+    // Assert
+    expect(
+      renderer.root.findByProps({ testID: 'home-empty' }).props.children,
+    ).toBe('No encontramos personajes.');
+  });
+
   test('calls onPressCharacter with the selected character', () => {
     // Arrange
     const onPressCharacter = jest.fn();

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -8,13 +8,24 @@ import { characterDetailQueryOptions } from '../../character-detail/queries/char
 import { type Character } from '../../../shared/types/character';
 import { buildCharacterDetailRouteParams } from '../../character-detail/utils/build-character-detail-route-params';
 import { HomeCharactersCard } from '../components/home-characters-card';
+import { HomeFilters } from '../components/home-filters';
 import { HomeHeader } from '../components/home-header';
+import { DEFAULT_HOME_CHARACTERS_FILTERS } from '../constants/home.constants';
 import { useHomeCharacters } from '../hooks/use-home-characters';
+import { type HomeCharacterStatusFilter } from '../types/home-characters-filters';
 
 export function HomeScreen() {
   const navigation = useNavigation();
   const queryClient = useQueryClient();
-  const { characters, isLoading, errorMessage } = useHomeCharacters();
+  const [searchValue, setSearchValue] = useState(
+    DEFAULT_HOME_CHARACTERS_FILTERS.search,
+  );
+  const [selectedStatus, setSelectedStatus] =
+    useState<HomeCharacterStatusFilter>(DEFAULT_HOME_CHARACTERS_FILTERS.status);
+  const { characters, isLoading, errorMessage } = useHomeCharacters({
+    search: searchValue,
+    status: selectedStatus,
+  });
 
   function handlePressCharacter(character: Character) {
     queryClient.prefetchQuery(characterDetailQueryOptions(character.id));
@@ -28,6 +39,12 @@ export function HomeScreen() {
   return (
     <ScreenLayout>
       <HomeHeader />
+      <HomeFilters
+        onChangeSearch={setSearchValue}
+        onChangeStatus={setSelectedStatus}
+        searchValue={searchValue}
+        selectedStatus={selectedStatus}
+      />
       <HomeCharactersCard
         characters={characters}
         isLoading={isLoading}

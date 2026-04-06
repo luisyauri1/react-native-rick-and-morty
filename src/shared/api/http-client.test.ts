@@ -1,4 +1,4 @@
-import { getJson } from './http-client';
+import { getJson, HttpRequestError } from './http-client';
 
 describe('getJson', () => {
   afterEach(() => {
@@ -44,7 +44,7 @@ describe('getJson', () => {
     expect(result).toEqual(mockedResponse);
   });
 
-  test('throws an error when the response is not ok', async () => {
+  test('throws an http request error when the response is not ok', async () => {
     // Arrange
     globalThis.fetch = jest.fn().mockResolvedValue({
       ok: false,
@@ -56,6 +56,6 @@ describe('getJson', () => {
     const request = getJson('/character/99999');
 
     // Assert
-    await expect(request).rejects.toThrow('Request failed with status 404');
+    await expect(request).rejects.toBeInstanceOf(HttpRequestError);
   });
 });

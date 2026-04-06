@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { type Character } from '../../../shared/types/character';
 import { HOME_CHARACTERS_ERROR_MESSAGE } from '../constants/home.constants';
 import { homeCharactersQueryOptions } from '../queries/home-characters-query';
+import { type HomeCharactersFilters } from '../types/home-characters-filters';
 
 type UseHomeCharactersResult = {
   characters: Character[];
@@ -10,8 +11,12 @@ type UseHomeCharactersResult = {
   errorMessage: string | null;
 };
 
-export function useHomeCharacters(): UseHomeCharactersResult {
-  const { data, isLoading, error } = useQuery(homeCharactersQueryOptions());
+export function useHomeCharacters(
+  filters: HomeCharactersFilters,
+): UseHomeCharactersResult {
+  const { data, isLoading, error } = useQuery(
+    homeCharactersQueryOptions(filters),
+  );
 
   return {
     characters: data ?? [],

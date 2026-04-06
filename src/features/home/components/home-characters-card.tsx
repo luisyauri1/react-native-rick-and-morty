@@ -6,6 +6,7 @@ import { SurfaceCard } from '../../../shared/ui/surface-card';
 import { colors } from '../../../shared/theme/colors';
 import {
   HOME_CARD_TITLE,
+  HOME_EMPTY_MESSAGE,
   HOME_LOADING_MESSAGE,
 } from '../constants/home.constants';
 import { HomeCharacterItem } from './home-character-item';
@@ -39,7 +40,13 @@ export function HomeCharactersCard({
         </Text>
       ) : null}
 
-      {!isLoading && !errorMessage
+      {!isLoading && !errorMessage && characters.length === 0 ? (
+        <Text style={styles.cardDescription} testID="home-empty">
+          {HOME_EMPTY_MESSAGE}
+        </Text>
+      ) : null}
+
+      {!isLoading && !errorMessage && characters.length > 0
         ? characters.map(character => (
             <HomeCharacterItem
               key={character.id}

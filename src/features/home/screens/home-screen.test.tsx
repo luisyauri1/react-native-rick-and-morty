@@ -28,6 +28,41 @@ jest.mock('../components/home-header', () => {
   };
 });
 
+jest.mock('../components/home-filters', () => {
+  const { Text: MockText } = require('react-native');
+
+  return {
+    HomeFilters: ({
+      searchValue,
+      selectedStatus,
+      onChangeSearch,
+      onChangeStatus,
+    }: {
+      searchValue: string;
+      selectedStatus: 'all' | 'alive' | 'dead' | 'unknown';
+      onChangeSearch: (nextValue: string) => void;
+      onChangeStatus: (nextValue: 'all' | 'alive' | 'dead' | 'unknown') => void;
+    }) => (
+      <>
+        <MockText testID="home-filters-search-value">{searchValue}</MockText>
+        <MockText testID="home-filters-status-value">{selectedStatus}</MockText>
+        <MockText
+          testID="home-filters-change-search"
+          onPress={() => onChangeSearch('Morty')}
+        >
+          change-search
+        </MockText>
+        <MockText
+          testID="home-filters-change-status"
+          onPress={() => onChangeStatus('dead')}
+        >
+          change-status
+        </MockText>
+      </>
+    ),
+  };
+});
+
 jest.mock('../components/home-characters-card', () => {
   const { Text: MockText } = require('react-native');
 
@@ -38,10 +73,26 @@ jest.mock('../components/home-characters-card', () => {
       errorMessage,
       onPressCharacter,
     }: {
-      characters: { id: number; name: string }[];
+      characters: {
+        id: number;
+        name: string;
+        status: 'Alive' | 'Dead' | 'unknown';
+        gender: 'Female' | 'Male' | 'Genderless' | 'unknown';
+        species: string;
+        origin: { name: string; url: string };
+        image: string;
+      }[];
       isLoading: boolean;
       errorMessage: string | null;
-      onPressCharacter: (character: { id: number; name: string }) => void;
+      onPressCharacter: (character: {
+        id: number;
+        name: string;
+        status: 'Alive' | 'Dead' | 'unknown';
+        gender: 'Female' | 'Male' | 'Genderless' | 'unknown';
+        species: string;
+        origin: { name: string; url: string };
+        image: string;
+      }) => void;
     }) => (
       <>
         <MockText testID="home-card-characters-count">{characters.length}</MockText>
@@ -69,6 +120,19 @@ const useNavigationMock =
 const useQueryClientMock =
   useQueryClient as jest.MockedFunction<typeof useQueryClient>;
 
+const firstCharacter = {
+  id: 1,
+  name: 'Rick Sanchez',
+  status: 'Alive' as const,
+  gender: 'Male' as const,
+  species: 'Human',
+  origin: {
+    name: 'Earth (C-137)',
+    url: 'https://rickandmortyapi.com/api/location/1',
+  },
+  image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
+};
+
 let currentRenderer: ReactTestRenderer.ReactTestRenderer | null = null;
 
 function renderHomeScreen() {
@@ -77,6 +141,20 @@ function renderHomeScreen() {
   });
 
   return currentRenderer!;
+}
+
+function mockHomeScreenBase() {
+  useNavigationMock.mockReturnValue({
+    navigate: jest.fn(),
+  } as never);
+  useQueryClientMock.mockReturnValue({
+    prefetchQuery: jest.fn(),
+  } as never);
+  useHomeCharactersMock.mockReturnValue({
+    characters: [],
+    isLoading: false,
+    errorMessage: null,
+  });
 }
 
 describe('HomeScreen', () => {
@@ -96,12 +174,7 @@ describe('HomeScreen', () => {
 
   test('renders the loading message when the hook is loading', () => {
     // Arrange
-    useNavigationMock.mockReturnValue({
-      navigate: jest.fn(),
-    } as never);
-    useQueryClientMock.mockReturnValue({
-      prefetchQuery: jest.fn(),
-    } as never);
+    mockHomeScreenBase();
     useHomeCharactersMock.mockReturnValue({
       characters: [],
       isLoading: true,
@@ -120,17 +193,7 @@ describe('HomeScreen', () => {
 
   test('renders the header component', () => {
     // Arrange
-    useNavigationMock.mockReturnValue({
-      navigate: jest.fn(),
-    } as never);
-    useQueryClientMock.mockReturnValue({
-      prefetchQuery: jest.fn(),
-    } as never);
-    useHomeCharactersMock.mockReturnValue({
-      characters: [],
-      isLoading: false,
-      errorMessage: null,
-    });
+    mockHomeScreenBase();
 
     // Act
     const renderer = renderHomeScreen();
@@ -142,41 +205,89 @@ describe('HomeScreen', () => {
     ).toBe('header');
   });
 
+  test('passes the default search value to the filters component', () => {
+    // Arrange
+    mockHomeScreenBase();
+
+    // Act
+    const renderer = renderHomeScreen();
+
+    // Assert
+    expect(
+      renderer.root.findByProps({ testID: 'home-filters-search-value' }).props
+        .children,
+    ).toBe('');
+  });
+
+  test('passes the default status value to the filters component', () => {
+    // Arrange
+    mockHomeScreenBase();
+
+    // Act
+    const renderer = renderHomeScreen();
+
+    // Assert
+    expect(
+      renderer.root.findByProps({ testID: 'home-filters-status-value' }).props
+        .children,
+    ).toBe('all');
+  });
+
+  test('calls the hook with the default filters', () => {
+    // Arrange
+    mockHomeScreenBase();
+
+    // Act
+    renderHomeScreen();
+
+    // Assert
+    expect(useHomeCharactersMock).toHaveBeenCalledWith({
+      search: '',
+      status: 'all',
+    });
+  });
+
+  test('updates the hook filters after changing the search value', () => {
+    // Arrange
+    mockHomeScreenBase();
+    const renderer = renderHomeScreen();
+
+    // Act
+    act(() => {
+      renderer.root.findByProps({ testID: 'home-filters-change-search' }).props
+        .onPress();
+    });
+
+    // Assert
+    expect(useHomeCharactersMock).toHaveBeenLastCalledWith({
+      search: 'Morty',
+      status: 'all',
+    });
+  });
+
+  test('updates the hook filters after changing the status value', () => {
+    // Arrange
+    mockHomeScreenBase();
+    const renderer = renderHomeScreen();
+
+    // Act
+    act(() => {
+      renderer.root.findByProps({ testID: 'home-filters-change-status' }).props
+        .onPress();
+    });
+
+    // Assert
+    expect(useHomeCharactersMock).toHaveBeenLastCalledWith({
+      search: '',
+      status: 'dead',
+    });
+  });
+
   test('passes the character count to the card component', () => {
     // Arrange
-    useNavigationMock.mockReturnValue({
-      navigate: jest.fn(),
-    } as never);
-    useQueryClientMock.mockReturnValue({
-      prefetchQuery: jest.fn(),
-    } as never);
+    mockHomeScreenBase();
     useHomeCharactersMock.mockReturnValue({
-      characters: [
-        {
-          id: 1,
-          name: 'Rick Sanchez',
-          status: 'Alive',
-          gender: 'Male',
-          species: 'Human',
-          origin: {
-            name: 'Earth (C-137)',
-            url: 'https://rickandmortyapi.com/api/location/1',
-          },
-          image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
-        },
-        {
-          id: 2,
-          name: 'Morty Smith',
-          status: 'Alive',
-          gender: 'Male',
-          species: 'Human',
-          origin: {
-            name: 'Earth (Replacement Dimension)',
-            url: 'https://rickandmortyapi.com/api/location/20',
-          },
-          image: 'https://rickandmortyapi.com/api/character/avatar/2.jpeg',
-        },
-      ],
+      characters: [firstCharacter, { ...firstCharacter, id: 2, name: 'Morty Smith' }],
       isLoading: false,
       errorMessage: null,
     });
@@ -193,12 +304,7 @@ describe('HomeScreen', () => {
 
   test('passes the error message to the card component', () => {
     // Arrange
-    useNavigationMock.mockReturnValue({
-      navigate: jest.fn(),
-    } as never);
-    useQueryClientMock.mockReturnValue({
-      prefetchQuery: jest.fn(),
-    } as never);
+    mockHomeScreenBase();
     useHomeCharactersMock.mockReturnValue({
       characters: [],
       isLoading: false,
@@ -227,20 +333,7 @@ describe('HomeScreen', () => {
       prefetchQuery,
     } as never);
     useHomeCharactersMock.mockReturnValue({
-      characters: [
-        {
-          id: 1,
-          name: 'Rick Sanchez',
-          status: 'Alive',
-          gender: 'Male',
-          species: 'Human',
-          origin: {
-            name: 'Earth (C-137)',
-            url: 'https://rickandmortyapi.com/api/location/1',
-          },
-          image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
-        },
-      ],
+      characters: [firstCharacter],
       isLoading: false,
       errorMessage: null,
     });
@@ -269,20 +362,7 @@ describe('HomeScreen', () => {
       prefetchQuery,
     } as never);
     useHomeCharactersMock.mockReturnValue({
-      characters: [
-        {
-          id: 1,
-          name: 'Rick Sanchez',
-          status: 'Alive',
-          gender: 'Male',
-          species: 'Human',
-          origin: {
-            name: 'Earth (C-137)',
-            url: 'https://rickandmortyapi.com/api/location/1',
-          },
-          image: 'https://rickandmortyapi.com/api/character/avatar/1.jpeg',
-        },
-      ],
+      characters: [firstCharacter],
       isLoading: false,
       errorMessage: null,
     });

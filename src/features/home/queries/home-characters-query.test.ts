@@ -13,32 +13,46 @@ jest.mock('../api/get-home-characters', () => ({
 const getHomeCharactersMock =
   getHomeCharacters as jest.MockedFunction<typeof getHomeCharacters>;
 
+const defaultFilters = {
+  search: '',
+  status: 'all',
+} as const;
+
 describe('homeCharactersQueryOptions', () => {
   afterEach(() => {
     getHomeCharactersMock.mockReset();
   });
 
-  test('returns the home characters query key', () => {
+  test('returns the home characters query key with normalized filters', () => {
     // Arrange
 
     // Act
-    const options = homeCharactersQueryOptions();
+    const options = homeCharactersQueryOptions({
+      search: '  rick  ',
+      status: 'alive',
+    });
 
     // Assert
-    expect(options.queryKey).toEqual(['home-characters']);
+    expect(options.queryKey).toEqual([
+      'home-characters',
+      {
+        search: 'rick',
+        status: 'alive',
+      },
+    ]);
   });
 
   test('returns the configured stale time', () => {
     // Arrange
 
     // Act
-    const options = homeCharactersQueryOptions();
+    const options = homeCharactersQueryOptions(defaultFilters);
 
     // Assert
     expect(options.staleTime).toBe(HOME_CHARACTERS_STALE_TIME_MS);
   });
 
-  test('uses the home characters request as query function', async () => {
+  test('uses the home characters request as query function with normalized filters', async () => {
     // Arrange
     const queryClient = new QueryClient({
       defaultOptions: {
@@ -50,9 +64,17 @@ describe('homeCharactersQueryOptions', () => {
     getHomeCharactersMock.mockResolvedValue([]);
 
     // Act
-    await queryClient.fetchQuery(homeCharactersQueryOptions());
+    await queryClient.fetchQuery(
+      homeCharactersQueryOptions({
+        search: '  morty  ',
+        status: 'dead',
+      }),
+    );
 
     // Assert
-    expect(getHomeCharactersMock).toHaveBeenCalledTimes(1);
+    expect(getHomeCharactersMock).toHaveBeenCalledWith({
+      search: 'morty',
+      status: 'dead',
+    });
   });
 });

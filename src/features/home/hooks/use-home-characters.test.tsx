@@ -17,11 +17,25 @@ jest.mock('../api/get-home-characters', () => ({
 const getHomeCharactersMock =
   getHomeCharacters as jest.MockedFunction<typeof getHomeCharacters>;
 
+const defaultFilters = {
+  search: '',
+  status: 'all',
+} as const;
+
 let currentRenderer: ReactTestRenderer.ReactTestRenderer | null = null;
 let currentQueryClient: QueryClient | null = null;
 
-function HookHarness() {
-  const { characters, isLoading, errorMessage } = useHomeCharacters();
+function HookHarness({
+  search = defaultFilters.search,
+  status = defaultFilters.status,
+}: {
+  search?: string;
+  status?: 'all' | 'alive' | 'dead' | 'unknown';
+}) {
+  const { characters, isLoading, errorMessage } = useHomeCharacters({
+    search,
+    status,
+  });
   const queryClient = useQueryClient();
 
   return (
@@ -34,7 +48,9 @@ function HookHarness() {
   );
 }
 
-function renderHookHarness() {
+function renderHookHarness(
+  overrides: React.ComponentProps<typeof HookHarness> = {},
+) {
   currentQueryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -47,7 +63,7 @@ function renderHookHarness() {
   act(() => {
     currentRenderer = ReactTestRenderer.create(
       <QueryClientProvider client={currentQueryClient!}>
-        <HookHarness />
+        <HookHarness {...overrides} />
       </QueryClientProvider>,
     );
   });
@@ -84,16 +100,22 @@ describe('useHomeCharacters', () => {
     currentQueryClient = null;
   });
 
-  test('requests home characters when the hook mounts', async () => {
+  test('requests home characters with the provided filters when the hook mounts', async () => {
     // Arrange
     getHomeCharactersMock.mockResolvedValue([]);
 
     // Act
-    renderHookHarness();
+    renderHookHarness({
+      search: 'Morty',
+      status: 'dead',
+    });
     await flushPendingUpdates();
 
     // Assert
-    expect(getHomeCharactersMock).toHaveBeenCalledTimes(1);
+    expect(getHomeCharactersMock).toHaveBeenCalledWith({
+      search: 'Morty',
+      status: 'dead',
+    });
   });
 
   test('starts in loading state while the request is pending', () => {

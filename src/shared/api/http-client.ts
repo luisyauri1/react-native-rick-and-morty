@@ -1,5 +1,12 @@
 const API_BASE_URL = 'https://rickandmortyapi.com/api';
 
+export class HttpRequestError extends Error {
+  constructor(readonly status: number) {
+    super(`Request failed with status ${status}`);
+    this.name = 'HttpRequestError';
+  }
+}
+
 function buildApiUrl(path: string) {
   if (path.startsWith('/')) {
     return `${API_BASE_URL}${path}`;
@@ -17,7 +24,7 @@ export async function getJson<T>(path: string): Promise<T> {
   });
 
   if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
+    throw new HttpRequestError(response.status);
   }
 
   return response.json() as Promise<T>;
