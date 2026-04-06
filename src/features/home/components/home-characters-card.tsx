@@ -3,6 +3,10 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../../../shared/theme/colors';
 import { type Character } from '../../../shared/types/character';
+import {
+  HOME_CARD_TITLE,
+  HOME_LOADING_MESSAGE,
+} from '../constants/home.constants';
 import { HomeCharacterItem } from './home-character-item';
 
 type HomeCharactersCardProps = {
@@ -20,11 +24,11 @@ export function HomeCharactersCard({
 }: HomeCharactersCardProps) {
   return (
     <View style={styles.card}>
-      <Text style={styles.cardTitle}>Primeros personajes</Text>
+      <Text style={styles.cardTitle}>{HOME_CARD_TITLE}</Text>
 
       {isLoading ? (
         <Text style={styles.cardDescription} testID="home-loading">
-          Cargando personajes...
+          {HOME_LOADING_MESSAGE}
         </Text>
       ) : null}
 

@@ -1,13 +1,17 @@
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
 
+import {
+  HOME_SCREEN_SUBTITLE,
+  HOME_SCREEN_TITLE,
+} from '../constants/home.constants';
 import { colors } from '../../../shared/theme/colors';
 
 export function HomeHeader() {
   return (
     <>
-      <Text style={styles.title}>The Rick and Morty API</Text>
-      <Text style={styles.subtitle}>Home</Text>
+      <Text style={styles.title}>{HOME_SCREEN_TITLE}</Text>
+      <Text style={styles.subtitle}>{HOME_SCREEN_SUBTITLE}</Text>
     </>
   );
 }

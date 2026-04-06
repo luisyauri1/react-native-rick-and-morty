@@ -7,6 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AccessScreen } from '../../features/access/screens/access-screen';
 import { CHARACTER_DETAIL_TITLE } from '../../features/character-detail/constants/character-detail.constants';
 import { CharacterDetailScreen } from '../../features/character-detail/screens/character-detail-screen';
+import { HOME_SCREEN_SUBTITLE } from '../../features/home/constants/home.constants';
 import { HomeScreen } from '../../features/home/screens/home-screen';
 import { colors } from '../../shared/theme/colors';
 
@@ -35,7 +36,7 @@ const RootStack = createNativeStackNavigator({
     Home: {
       screen: HomeScreen,
       options: {
-        title: 'Home',
+        title: HOME_SCREEN_SUBTITLE,
       },
     },
     CharacterDetail: {
