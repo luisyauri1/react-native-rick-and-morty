@@ -40,7 +40,13 @@ describe('characterDetailQueryOptions', () => {
 
   test('uses the selected character request as query function', async () => {
     // Arrange
-    const queryClient = new QueryClient();
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          gcTime: Infinity,
+        },
+      },
+    });
     getCharacterDetailMock.mockResolvedValue({
       id: 1,
       name: 'Rick Sanchez',

@@ -38,6 +38,7 @@ function renderHookHarness() {
   currentQueryClient = new QueryClient({
     defaultOptions: {
       queries: {
+        gcTime: Infinity,
         retry: false,
       },
     },

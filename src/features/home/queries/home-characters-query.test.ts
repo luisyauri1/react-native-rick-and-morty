@@ -40,7 +40,13 @@ describe('homeCharactersQueryOptions', () => {
 
   test('uses the home characters request as query function', async () => {
     // Arrange
-    const queryClient = new QueryClient();
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          gcTime: Infinity,
+        },
+      },
+    });
     getHomeCharactersMock.mockResolvedValue([]);
 
     // Act
