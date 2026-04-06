@@ -1,19 +1,19 @@
 import React from 'react';
 import ReactTestRenderer, { act } from 'react-test-renderer';
 
-import { getHomeCharacters } from '../api/get-home-characters';
+import { useHomeCharacters } from '../hooks/use-home-characters';
 import { HomeScreen } from './home-screen';
 
-jest.mock('../api/get-home-characters', () => ({
-  getHomeCharacters: jest.fn(),
+jest.mock('../hooks/use-home-characters', () => ({
+  useHomeCharacters: jest.fn(),
 }));
 
 jest.mock('../../../shared/ui/screen-layout', () => ({
   ScreenLayout: ({ children }: { children: React.ReactNode }) => children,
 }));
 
-const getHomeCharactersMock =
-  getHomeCharacters as jest.MockedFunction<typeof getHomeCharacters>;
+const useHomeCharactersMock =
+  useHomeCharacters as jest.MockedFunction<typeof useHomeCharacters>;
 
 let currentRenderer: ReactTestRenderer.ReactTestRenderer | null = null;
 
@@ -33,7 +33,7 @@ async function flushPendingUpdates() {
 
 describe('HomeScreen', () => {
   afterEach(() => {
-    getHomeCharactersMock.mockReset();
+    useHomeCharactersMock.mockReset();
 
     if (currentRenderer) {
       act(() => {
@@ -44,21 +44,13 @@ describe('HomeScreen', () => {
     currentRenderer = null;
   });
 
-  test('requests home characters when the screen mounts', async () => {
+  test('renders the loading message when the hook is loading', () => {
     // Arrange
-    getHomeCharactersMock.mockResolvedValue([]);
-
-    // Act
-    renderHomeScreen();
-    await flushPendingUpdates();
-
-    // Assert
-    expect(getHomeCharactersMock).toHaveBeenCalledWith();
-  });
-
-  test('renders the loading message while the request is pending', () => {
-    // Arrange
-    getHomeCharactersMock.mockReturnValue(new Promise(() => undefined));
+    useHomeCharactersMock.mockReturnValue({
+      characters: [],
+      isLoading: true,
+      errorMessage: null,
+    });
 
     // Act
     const renderer = renderHomeScreen();
@@ -71,7 +63,11 @@ describe('HomeScreen', () => {
 
   test('renders the first character after a successful request', async () => {
     // Arrange
-    getHomeCharactersMock.mockResolvedValue([{ id: 1, name: 'Rick Sanchez' }]);
+    useHomeCharactersMock.mockReturnValue({
+      characters: [{ id: 1, name: 'Rick Sanchez' }],
+      isLoading: false,
+      errorMessage: null,
+    });
 
     // Act
     renderHomeScreen();
@@ -86,7 +82,11 @@ describe('HomeScreen', () => {
 
   test('renders an error message when the request fails', async () => {
     // Arrange
-    getHomeCharactersMock.mockRejectedValue(new Error('Network error'));
+    useHomeCharactersMock.mockReturnValue({
+      characters: [],
+      isLoading: false,
+      errorMessage: 'No pudimos cargar personajes.',
+    });
 
     // Act
     renderHomeScreen();

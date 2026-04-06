@@ -1,48 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../../../shared/theme/colors';
 import { ScreenLayout } from '../../../shared/ui/screen-layout';
-import { getHomeCharacters } from '../api/get-home-characters';
-import { type Character } from '../types/character';
+import { useHomeCharacters } from '../hooks/use-home-characters';
 
 export function HomeScreen() {
-  const [characters, setCharacters] = useState<Character[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    async function loadCharacters() {
-      try {
-        const nextCharacters = await getHomeCharacters();
-
-        if (!isMounted) {
-          return;
-        }
-
-        setCharacters(nextCharacters);
-      } catch {
-        if (!isMounted) {
-          return;
-        }
-
-        setErrorMessage('No pudimos cargar personajes.');
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    }
-
-    loadCharacters();
-
-    return () => {
-      // Prevents state updates if the screen unmounts before the request ends.
-      isMounted = false;
-    };
-  }, []);
+  const { characters, isLoading, errorMessage } = useHomeCharacters();
 
   return (
     <ScreenLayout>
