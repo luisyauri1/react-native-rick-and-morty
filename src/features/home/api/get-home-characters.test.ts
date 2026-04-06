@@ -30,12 +30,17 @@ describe('getHomeCharacters', () => {
     // Arrange
     getJsonMock.mockResolvedValue({
       results: [
-        { id: 1, name: 'Rick Sanchez' },
-        { id: 2, name: 'Morty Smith' },
-        { id: 3, name: 'Summer Smith' },
-        { id: 4, name: 'Beth Smith' },
-        { id: 5, name: 'Jerry Smith' },
-        { id: 6, name: 'Abadango Cluster Princess' },
+        { id: 1, name: 'Rick Sanchez', status: 'Alive', species: 'Human' },
+        { id: 2, name: 'Morty Smith', status: 'Alive', species: 'Human' },
+        { id: 3, name: 'Summer Smith', status: 'Alive', species: 'Human' },
+        { id: 4, name: 'Beth Smith', status: 'Alive', species: 'Human' },
+        { id: 5, name: 'Jerry Smith', status: 'Alive', species: 'Human' },
+        {
+          id: 6,
+          name: 'Abadango Cluster Princess',
+          status: 'Alive',
+          species: 'Alien',
+        },
       ],
     });
 
@@ -44,11 +49,11 @@ describe('getHomeCharacters', () => {
 
     // Assert
     expect(result).toEqual([
-      { id: 1, name: 'Rick Sanchez' },
-      { id: 2, name: 'Morty Smith' },
-      { id: 3, name: 'Summer Smith' },
-      { id: 4, name: 'Beth Smith' },
-      { id: 5, name: 'Jerry Smith' },
+      { id: 1, name: 'Rick Sanchez', status: 'Alive', species: 'Human' },
+      { id: 2, name: 'Morty Smith', status: 'Alive', species: 'Human' },
+      { id: 3, name: 'Summer Smith', status: 'Alive', species: 'Human' },
+      { id: 4, name: 'Beth Smith', status: 'Alive', species: 'Human' },
+      { id: 5, name: 'Jerry Smith', status: 'Alive', species: 'Human' },
     ]);
   });
 });

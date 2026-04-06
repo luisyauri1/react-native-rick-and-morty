@@ -33,13 +33,20 @@ export function HomeCharactersCard({
 
       {!isLoading && !errorMessage
         ? characters.map(character => (
-            <Text
-              key={character.id}
-              style={styles.characterName}
-              testID={`home-character-${character.id}`}
-            >
-              {character.name}
-            </Text>
+            <View key={character.id} style={styles.characterRow}>
+              <Text
+                style={styles.characterName}
+                testID={`home-character-${character.id}`}
+              >
+                {character.name}
+              </Text>
+              <Text
+                style={styles.characterMeta}
+                testID={`home-character-meta-${character.id}`}
+              >
+                {character.status} - {character.species}
+              </Text>
+            </View>
           ))
         : null}
     </View>
@@ -70,5 +77,13 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 16,
     lineHeight: 24,
+  },
+  characterMeta: {
+    color: colors.muted,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  characterRow: {
+    marginBottom: 12,
   },
 });

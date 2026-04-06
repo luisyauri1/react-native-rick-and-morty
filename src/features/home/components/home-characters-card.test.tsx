@@ -64,13 +64,32 @@ describe('HomeCharactersCard', () => {
 
     // Act
     const renderer = renderHomeCharactersCard({
-      characters: [{ id: 1, name: 'Rick Sanchez' }],
+      characters: [
+        { id: 1, name: 'Rick Sanchez', status: 'Alive', species: 'Human' },
+      ],
     });
 
     // Assert
     expect(
       renderer.root.findByProps({ testID: 'home-character-1' }).props.children,
     ).toBe('Rick Sanchez');
+  });
+
+  test('renders the character status and species', () => {
+    // Arrange
+
+    // Act
+    const renderer = renderHomeCharactersCard({
+      characters: [
+        { id: 1, name: 'Rick Sanchez', status: 'Alive', species: 'Human' },
+      ],
+    });
+
+    // Assert
+    expect(
+      renderer.root.findByProps({ testID: 'home-character-meta-1' }).props
+        .children,
+    ).toEqual(['Alive', ' - ', 'Human']);
   });
 
   test('renders the error message when the request fails', () => {

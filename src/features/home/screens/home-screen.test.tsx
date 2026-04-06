@@ -108,8 +108,8 @@ describe('HomeScreen', () => {
     // Arrange
     useHomeCharactersMock.mockReturnValue({
       characters: [
-        { id: 1, name: 'Rick Sanchez' },
-        { id: 2, name: 'Morty Smith' },
+        { id: 1, name: 'Rick Sanchez', status: 'Alive', species: 'Human' },
+        { id: 2, name: 'Morty Smith', status: 'Alive', species: 'Human' },
       ],
       isLoading: false,
       errorMessage: null,

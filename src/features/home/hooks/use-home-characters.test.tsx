@@ -80,7 +80,9 @@ describe('useHomeCharacters', () => {
 
   test('stores the first loaded character after a successful request', async () => {
     // Arrange
-    getHomeCharactersMock.mockResolvedValue([{ id: 1, name: 'Rick Sanchez' }]);
+    getHomeCharactersMock.mockResolvedValue([
+      { id: 1, name: 'Rick Sanchez', status: 'Alive', species: 'Human' },
+    ]);
 
     // Act
     renderHookHarness();
